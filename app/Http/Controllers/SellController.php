@@ -104,8 +104,12 @@ class SellController extends Controller
 
             $permitted_locations = auth()->user()->permitted_locations();
             if ($permitted_locations != 'all') {
+								   
+										   
+						   
                 $sells->whereIn('transactions.location_id', $permitted_locations);
             }
+ 
 
             //Add condition for created_by,used in sales representative sales report
             if (request()->has('created_by')) {
@@ -120,6 +124,8 @@ class SellController extends Controller
                 $sells->where(function ($q) {
                     if (auth()->user()->hasAnyPermission(['view_own_sell_only', 'access_own_shipping'])) {
                         $q->where('transactions.created_by', request()->session()->get('user.id'));
+ 
+   
                     }
 
                     //if user is commission agent display only assigned sells
@@ -139,6 +145,7 @@ class SellController extends Controller
             }
 
             if (! $is_admin && ! $only_shipments && $sale_type != 'sales_order') {
+																				   
                 $payment_status_arr = [];
                 if (auth()->user()->can('view_paid_sells_only')) {
                     $payment_status_arr[] = 'paid';
@@ -171,7 +178,18 @@ class SellController extends Controller
             }
 
             if (! empty(request()->input('payment_status')) && request()->input('payment_status') != 'overdue') {
+																									 
                 $sells->where('transactions.payment_status', request()->input('payment_status'));
+				if (request()->input('payment_status') == 'due') {//Se agrega condicion para cuando sea due, muestre las partial y las due LAESTRADA
+                    $sells->whereIn('transactions.payment_status', ['due', 'partial']);
+                }else{
+                    $sells->where('transactions.payment_status', request()->input('payment_status'));
+                }//fin laestrada																																	
+																					   
+					  
+																									 
+								
+				
             } elseif (request()->input('payment_status') == 'overdue') {
                 $sells->whereIn('transactions.payment_status', ['due', 'partial'])
                     ->whereNotNull('transactions.pay_term_number')
@@ -626,11 +644,27 @@ class SellController extends Controller
         }
 
         $payment_types = $this->transactionUtil->payment_types(null, true, $business_id);
+																																																																		  
+ 
 
+   
+												
+	 
+									   
+	  
+						
+ 
+											 
 
         return view('sell.index')
         ->with(compact('business_locations', 'customers', 'is_woocommerce', 'sales_representative', 'is_cmsn_agent_enabled', 'commission_agents', 'service_staffs', 'is_tables_enabled', 'is_service_staff_enabled', 'is_types_service_enabled', 'shipping_statuses', 'sources', 'payment_types'));
+								   
+ 
+		
+												  
+								   
     }
+ 
 
     /**
      * Show the form for creating a new resource.
@@ -661,19 +695,34 @@ class SellController extends Controller
         }
 
         $walk_in_customer = $this->contactUtil->getWalkInCustomer($business_id);
+												   
+													   
 
         $business_details = $this->businessUtil->getDetails($business_id);
         $taxes = TaxRate::forBusinessDropdown($business_id, true, true);
+													  
+	  
+ 
 
+														  
+					   
+									 
         $business_locations = BusinessLocation::forDropdown($business_id, false, true);
         $bl_attributes = $business_locations['attributes'];
         $business_locations = $business_locations['locations'];
+ 
 
         $default_location = null;
         foreach ($business_locations as $id => $name) {
             $default_location = BusinessLocation::findOrFail($id);
             break;
         }
+										   
+ 
+																					   
+													  
+ 
+															
 
         $commsn_agnt_setting = $business_details->sales_cmsn_agnt;
         $commission_agent = [];
@@ -704,8 +753,18 @@ class SellController extends Controller
         $default_price_group_id = ! empty($default_location->selling_price_group_id) && array_key_exists($default_location->selling_price_group_id, $price_groups) ? $default_location->selling_price_group_id : null;
 
         $default_datetime = $this->businessUtil->format_date('now', true);
+																   
+																					  
+																			
+														
+ 
+																 
 
         $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+					   
+															 
+															  
+ 
 
         $invoice_schemes = InvoiceScheme::forDropdown($business_id);
         $default_invoice_schemes = InvoiceScheme::getDefault($business_id);
@@ -728,12 +787,20 @@ class SellController extends Controller
         }
 
         $status = request()->get('status', '');
+					
+ 
 
         $statuses = Transaction::sell_statuses();
+													  
+			  
+																  
+						
+																			   
 
         if ($sale_type == 'sales_order') {
             $status = 'ordered';
         }
+ 
 
         $is_order_request_enabled = false;
         $is_crm = $this->moduleUtil->isModuleInstalled('Crm');
@@ -749,8 +816,45 @@ class SellController extends Controller
 
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
+				   
+		
+				   
+					 
+				
+				   
+				   
+		
+				  
+			   
+				
+			   
+				   
+			   
+				  
+						  
+				   
+		   
+					
+		 
+			
+		   
+						   
+		
+						 
+			   
+   
+ 
 
         $change_return = $this->dummyPaymentLine;
+												
+	 
+												
+									   
+	  
+									   
+ 
+  
+ 
 
         return view('sell.create')
             ->with(compact(
@@ -818,20 +922,33 @@ class SellController extends Controller
         if (! auth()->user()->can('sell.view') && ! auth()->user()->can('direct_sell.access') && auth()->user()->can('view_own_sell_only')) {
             $query->where('transactions.created_by', request()->session()->get('user.id'));
         }
+		
 
         $sell = $query->firstOrFail();
+											   
+								   
+																							  
+											  
+ 
 
         $activities = Activity::forSubject($sell)
            ->with(['causer', 'subject'])
            ->latest()
            ->get();
+																			
+ 
+ 
+ 
 
         $line_taxes = [];
         foreach ($sell->sell_lines as $key => $value) {
             if (! empty($value->sub_unit_id)) {
                 $formated_sell_line = $this->transactionUtil->recalculateSellLineTotals($business_id, $value);
                 $sell->sell_lines[$key] = $formated_sell_line;
+		
+												   
             }
+ 
 
             if (! empty($taxes[$value->tax_id])) {
                 if (isset($line_taxes[$taxes[$value->tax_id]])) {
@@ -860,6 +977,22 @@ class SellController extends Controller
         $is_warranty_enabled = ! empty($common_settings['enable_product_warranty']) ? true : false;
 
         $statuses = Transaction::sell_statuses();
+			   
+		
+	   
+				
+			  
+			   
+					
+						 
+					  
+			 
+		   
+						   
+			   
+			
+   
+ 
 
         if ($sell->type == 'sales_order') {
             $sales_order_statuses = Transaction::sales_order_statuses(true);
@@ -867,6 +1000,11 @@ class SellController extends Controller
         }
         $status_color_in_activity = Transaction::sales_order_statuses();
         $sales_orders = $sell->salesOrders();
+						 
+ 
+																						
+								   
+ 
 
         return view('sale_pos.show')
             ->with(compact(
@@ -913,9 +1051,13 @@ class SellController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
+																			  
+										  
+				  
 
         $business_details = $this->businessUtil->getDetails($business_id);
         $taxes = TaxRate::forBusinessDropdown($business_id, true, true);
+ 
 
         $transaction = Transaction::where('business_id', $business_id)
                             ->with(['price_group', 'types_of_service', 'media', 'media.uploaded_by_user'])
@@ -925,9 +1067,78 @@ class SellController extends Controller
         if ($transaction->type == 'sales_order' && ! auth()->user()->can('so.update')) {
             abort(403, 'Unauthorized action.');
         }
+	
+	  
+ 
+	   
+						   
+									  
+	
+			   
+ 
+	   
+						   
+								  
+	
+	   
+ 
+																					 
+												   
+											  
+  
+												 
+															
+													 
+								 
+		 
+																												
+					 
+				 
+								
+						 
+									
+						  
+									
+					 
+				 
+				 
+								
+						   
+											
+							  
+												 
+										  
+											  
+														  
+																  
+																				  
+														 
+							
+													  
+														  
+											 
+										
+											
+											  
+											  
+					  
+									 
+									
+																			   
+ 
+		
 
         $location_id = $transaction->location_id;
         $location_printer_type = BusinessLocation::find($location_id)->receipt_printer_type;
+										   
+														
+						   
+		
+									  
+																	 
+													   
+										  
+ 
 
         $sell_details = TransactionSellLine::join(
                             'products AS p',
@@ -995,11 +1206,17 @@ class SellController extends Controller
                         ->get();
 
         if (! empty($sell_details)) {
+							 
+ 
+ 
             foreach ($sell_details as $key => $value) {
 
                 $variation = Variation::with('media')->findOrFail($value->variation_id);
+																	  
                 $sell_details[$key]->media = $variation->media;
+ 
 
+														   
                 //If modifier or combo sell line then unset
                 if (! empty($sell_details[$key]->parent_sell_line_id)) {
                     unset($sell_details[$key]);
@@ -1009,6 +1226,9 @@ class SellController extends Controller
                         $sell_details[$key]->qty_available = $actual_qty_avlbl;
                         $value->qty_available = $actual_qty_avlbl;
                     }
+ 
+ 
+													
 
                     $sell_details[$key]->formatted_qty_available = $this->productUtil->num_f($value->qty_available, false, null, true);
                     $lot_numbers = [];
@@ -1024,12 +1244,23 @@ class SellController extends Controller
                             $lot_numbers[] = $lot_number;
                         }
                     }
+	   
+			
+								 
                     $sell_details[$key]->lot_numbers = $lot_numbers;
+ 
 
                     if (! empty($value->sub_unit_id)) {
                         $value = $this->productUtil->changeSellLineUnit($business_id, $value);
+											
+					   
+											  
                         $sell_details[$key] = $value;
                     }
+  
+ 
+									
+																			
 
                     if ($this->transactionUtil->isModuleEnabled('modifiers')) {
                         //Add modifier details to sel line details
@@ -1053,6 +1284,7 @@ class SellController extends Controller
                     }
 
                     //Get details of combo items
+					   
                     if ($sell_details[$key]->product_type == 'combo') {
                         $sell_line_combos = TransactionSellLine::where('parent_sell_line_id', $sell_details[$key]->transaction_sell_lines_id)
                             ->where('children_type', 'combo')
@@ -1070,6 +1302,7 @@ class SellController extends Controller
                                 'quantity' => $combo_line['quantity'] / $sell_details[$key]->quantity_ordered,
                                 'unit_id' => null,
                             ];
+													  
                         }
                         $sell_details[$key]->qty_available =
                         $this->productUtil->calculateComboQuantity($location_id, $combo_variations);
@@ -1105,8 +1338,13 @@ class SellController extends Controller
         $customer_groups = CustomerGroup::forDropdown($business_id);
 
         $transaction->transaction_date = $this->transactionUtil->format_date($transaction->transaction_date, true);
+															
+																   
+ 
 
         $pos_settings = empty($business_details->pos_settings) ? $this->businessUtil->defaultPosSettings() : json_decode($business_details->pos_settings, true);
+														   
+																										 
 
         $waiters = [];
         if ($this->productUtil->isModuleEnabled('service_staff') && ! empty($pos_settings['inline_service_staff'])) {
@@ -1117,6 +1355,8 @@ class SellController extends Controller
         $default_invoice_schemes = null;
 
         if ($transaction->status == 'draft') {
+			   
+													
             $invoice_schemes = InvoiceScheme::forDropdown($business_id);
             $default_invoice_schemes = InvoiceScheme::getDefault($business_id);
         }
@@ -1137,14 +1377,28 @@ class SellController extends Controller
         if ($this->moduleUtil->isModuleEnabled('account')) {
             $accounts = Account::forDropdown($business_id, true, false);
         }
+						
+																			   
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
+								 
+ 
+ 
 
         $common_settings = session()->get('business.common_settings');
         $is_warranty_enabled = ! empty($common_settings['enable_product_warranty']) ? true : false;
         $warranties = $is_warranty_enabled ? Warranty::forDropdown($business_id) : [];
+							  
+											   
+										  
+									   
 
         $statuses = Transaction::sell_statuses();
+												   
+ 
+  
+							
+ 
 
         $is_order_request_enabled = false;
         $is_crm = $this->moduleUtil->isModuleInstalled('Crm');
@@ -1156,6 +1410,7 @@ class SellController extends Controller
             if (! empty($crm_settings['enable_order_request'])) {
                 $is_order_request_enabled = true;
             }
+										   
         }
 
         $sales_orders = [];
@@ -1182,8 +1437,19 @@ class SellController extends Controller
         }
 
         $change_return = $this->dummyPaymentLine;
+																																																																																																										 
+ 
 
         $customer_due = $this->transactionUtil->getContactDue($transaction->contact_id, $transaction->business_id);
+									
+	 
+									   
+	  
+						   
+ 
+																						 
+								   
+ 
 
         $customer_due = $customer_due != 0 ? $this->transactionUtil->num_f($customer_due, true) : '';
 
@@ -1206,11 +1472,21 @@ class SellController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
+										
+	 
+									   
+	  
+							   
+ 
+																								 
+								   
+ 
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
 
         $sales_representative = User::forDropdown($business_id, false, false, true);
+															 
 
         return view('sale_pos.draft')
             ->with(compact('business_locations', 'customers', 'sales_representative'));
@@ -1227,12 +1503,50 @@ class SellController extends Controller
             abort(403, 'Unauthorized action.');
         }
 
+   
+														  
+	 
+									   
+	  
+								  
+ 
+						
         $business_id = request()->session()->get('user.business_id');
+													
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
 
         $sales_representative = User::forDropdown($business_id, false, false, true);
+																
+	   
+						   
+						   
+	
+	   
+ 
+															  
+													   
+									   
+  
+												 
+									
+									   
+		 
+				  
+				   
+			 
+				
+				  
+								  
+							   
+				 
+			 
+												  
+											   
+																														
+						
+  
 
         return view('sale_pos.quotations')
                 ->with(compact('business_locations', 'customers', 'sales_representative'));
@@ -1248,8 +1562,16 @@ class SellController extends Controller
         if (request()->ajax()) {
             $business_id = request()->session()->get('user.business_id');
             $is_quotation = request()->input('is_quotation', 0);
+		
+																					   
+																			   
+ 
+ 
 
             $is_woocommerce = $this->moduleUtil->isModuleInstalled('Woocommerce');
+									
+																  
+ 
 
             $sells = Transaction::leftJoin('contacts', 'transactions.contact_id', '=', 'contacts.id')
                 ->leftJoin('users as u', 'transactions.created_by', '=', 'u.id')
@@ -1283,7 +1605,11 @@ class SellController extends Controller
                 );
 
             if ($is_quotation == 1) {
+											 
+							
                 $sells->where('transactions.sub_status', 'quotation');
+ 
+ 
 
                 if (! auth()->user()->can('quotation.view_all') && auth()->user()->can('quotation.view_own')) {
                     $sells->where('transactions.created_by', request()->session()->get('user.id'));
@@ -1319,17 +1645,45 @@ class SellController extends Controller
                     $sells->where('transactions.created_by', $created_by);
                 }
             }
+					   
+																 
+										  
+										
+																						 
+									   
+																																														
+																										   
+									   
+										  
 
             if (! empty(request()->customer_id)) {
                 $customer_id = request()->customer_id;
                 $sells->where('contacts.id', $customer_id);
+																																				   
+																								 
+											   
+											  
+		
+			  
+																																					  
+																								 
+											   
+											  
             }
+ 
 
             if ($is_woocommerce) {
                 $sells->addSelect('transactions.woocommerce_order_id');
             }
 
             $sells->groupBy('transactions.id');
+															   
+			  
+																																					 
+																														
+										   
+										  
+ 
 
             return Datatables::of($sells)
                  ->addColumn(
@@ -1347,6 +1701,7 @@ class SellController extends Controller
                                         <i class="fas fa-eye" aria-hidden="true"></i>'.__('messages.view').'
                                     </a>
                                     </li>';
+ 
 
                         if (auth()->user()->can('draft.update') || auth()->user()->can('quotation.update')) {
                             if ($row->is_direct_sale == 1) {
@@ -1364,14 +1719,20 @@ class SellController extends Controller
                             }
                         }
 
+																					 
                         $html .= '<li>
                                     <a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'"><i class="fas fa-print" aria-hidden="true"></i>'.__('messages.print').'</a>
                                 </li>';
+ 
 
                         if (config('constants.enable_download_pdf')) {
                             $sub_status = $row->sub_status == 'proforma' ? 'proforma' : '';
                             $html .= '<li>
                                         <a href="'.route('quotation.downloadPdf', ['id' => $row->id, 'sub_status' => $sub_status]).'" target="_blank">
+																						   
+								  
+										
+									   
                                             <i class="fas fa-print" aria-hidden="true"></i>'.__('lang_v1.download_pdf').'
                                         </a>
                                     </li>';
@@ -1379,7 +1740,10 @@ class SellController extends Controller
 
                         if ((auth()->user()->can('sell.create') || auth()->user()->can('direct_sell.access')) && config('constants.enable_convert_draft_to_invoice')) {
                             $html .= '<li>
+										
+									   
                                         <a href="'.action([\App\Http\Controllers\SellPosController::class, 'convertToInvoice'], [$row->id]).'" class="convert-draft"><i class="fas fa-sync-alt"></i>'.__('lang_v1.convert_to_invoice').'</a>
+										   
                                     </li>';
                         }
 
@@ -1392,6 +1756,9 @@ class SellController extends Controller
                         if (auth()->user()->can('draft.delete') || auth()->user()->can('quotation.delete')) {
                             $html .= '<li>
                                 <a href="'.action([\App\Http\Controllers\SellPosController::class, 'destroy'], [$row->id]).'" class="delete-sale"><i class="fas fa-trash"></i>'.__('messages.delete').'</a>
+											
+							   
+										  
                                 </li>';
                         }
 
@@ -1412,6 +1779,32 @@ class SellController extends Controller
                         }
 
                         $html .= '</ul></div>';
+  
+																	   
+																 
+																	   
+																													 
+															
+											
+												  
+																	 
+   
+  
+														
+																																			  
+  
+			  
+								
+									   
+																				  
+		
+		  
+ 
+	 
+																		  
+			 
+ 
+ 
 
                         return $html;
                     })
@@ -1420,6 +1813,9 @@ class SellController extends Controller
                     $invoice_no = $row->invoice_no;
                     if (! empty($row->woocommerce_order_id)) {
                         $invoice_no .= ' <i class="fab fa-wordpress text-primary no-print" title="'.__('lang_v1.synced_from_woocommerce').'"></i>';
+ 
+										   
+								   
                     }
 
                     if ($row->sub_status == 'proforma') {
@@ -1429,6 +1825,17 @@ class SellController extends Controller
                     if (! empty($row->is_export)) {
                         $invoice_no .= '</br><small class="label label-default no-print" title="'.__('lang_v1.export').'">'.__('lang_v1.export').'</small>';
                     }
+								 
+													 
+														   
+										   
+ 
+ 
+												
+													 
+																 
+													 
+													
 
                     return $invoice_no;
                 })
@@ -1491,6 +1898,7 @@ class SellController extends Controller
 
             DB::beginTransaction();
             $duplicate_transaction_data['invoice_no'] = $this->transactionUtil->getInvoiceNumber($business_id, 'draft', $duplicate_transaction_data['location_id']);
+ 
 
             //Create duplicate transaction
             $duplicate_transaction = Transaction::create($duplicate_transaction_data);
@@ -1507,11 +1915,30 @@ class SellController extends Controller
                 }
 
                 $duplicate_sell_lines_data[] = $new_sell_line;
+												
+  
             }
 
             $duplicate_transaction->sell_lines()->createMany($duplicate_sell_lines_data);
+												  
+																																		  
+		
+																																			 
+ 
+		
+						 
+ 
+ 
 
             DB::commit();
+										   
+	 
+					  
+									   
+	  
+								 
+ 
+														  
 
             $output = ['success' => 0,
                 'msg' => trans('lang_v1.duplicate_sell_created_successfully'),
@@ -1551,14 +1978,28 @@ class SellController extends Controller
         }
 
         $business_id = request()->session()->get('user.business_id');
+							 
+													  
+		  
+		
 
         $transaction = Transaction::where('business_id', $business_id)
                                 ->with(['media', 'media.uploaded_by_user'])
                                 ->findorfail($id);
 
         $users = User::forDropdown($business_id, false, false, false);
+					  
+	 
+										 
+									   
+	  
+													 
+ 
+														  
 
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
+								   
+ 
 
         $activities = Activity::forSubject($transaction)
            ->with(['causer', 'subject'])
@@ -1590,18 +2031,33 @@ class SellController extends Controller
                 'shipping_status', 'delivered_to', 'delivery_person', 'shipping_custom_field_1', 'shipping_custom_field_2', 'shipping_custom_field_3', 'shipping_custom_field_4', 'shipping_custom_field_5',
             ]);
 
+							 
 
             $business_id = $request->session()->get('user.business_id');
+																											  
 
             $transaction = Transaction::where('business_id', $business_id)
                                 ->findOrFail($id);
+  
+						 
+																						 
 
             $transaction_before = $transaction->replicate();
+												
+  
+ 
 
             $transaction->update($input);
+ 
 
             $activity_property = ['update_note' => $request->input('shipping_note', '')];
             $this->transactionUtil->activityLog($transaction, 'shipping_edited', $transaction_before, $activity_property);
+	 
+									   
+	  
+						   
+ 
+														  
 
             $output = ['success' => 1,
                 'msg' => trans('lang_v1.updated_success'),
@@ -1633,13 +2089,23 @@ class SellController extends Controller
         $shipping_statuses = $this->transactionUtil->shipping_statuses();
 
         $business_id = request()->session()->get('user.business_id');
+					   
+														   
+																		 
+ 
 
         $business_locations = BusinessLocation::forDropdown($business_id, false);
         $customers = Contact::customersDropdown($business_id, false);
 
         $sales_representative = User::forDropdown($business_id, false, false, true);
+																																			
+ 
 
         $is_service_staff_enabled = $this->transactionUtil->isModuleEnabled('service_staff');
+ 
+						
+											 
+															 
 
         //Service staff filter
         $service_staffs = null;
@@ -1648,6 +2114,10 @@ class SellController extends Controller
         }
 
         $delevery_person = User::forDropdown($business_id, false, false, true);
+													
+																		
+										  
+ 
 
         return view('sell.shipments')->with(compact('shipping_statuses'))
                 ->with(compact('business_locations', 'customers', 'sales_representative', 'is_service_staff_enabled', 'service_staffs', 'delevery_person'));
@@ -1662,6 +2132,8 @@ class SellController extends Controller
             $query = Media::where('business_id', $business_id)
                         ->where('model_id', $model_id)
                         ->where('model_type', $model_type);
+								   
+ 
 
             $title = __('lang_v1.attachments');
             if (! empty(request()->input('model_media_type'))) {
