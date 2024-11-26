@@ -63,6 +63,7 @@ use Stripe\Charge;
 use Stripe\Stripe;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\SellCreatedOrModified;
+use App\FelConfiguration; // laestrada tabla fel configuration
 
 class SellPosController extends Controller
 {
@@ -261,6 +262,11 @@ class SellPosController extends Controller
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
+        //Configuration Fel LAESTRADA 2024
+        $felconfigurations = FelConfiguration::where('business_id', $business_id)
+        ->where('location_id', $default_location->id)
+        ->first();
+
         return view('sale_pos.create')
             ->with(compact(
                 'edit_discount',
@@ -294,6 +300,7 @@ class SellPosController extends Controller
                 'default_invoice_schemes',
                 'invoice_layouts',
                 'users',
+                'felconfigurations', 
             ));
     }
 
@@ -578,7 +585,22 @@ class SellPosController extends Controller
                         'pos_settings' => $pos_settings,
                     ];
                     $this->transactionUtil->mapPurchaseSell($business, $transaction->sell_lines, 'purchase');
-
+                    // Llamado para generar XMLInfile LAESTRADA
+                    if($request->input('ffel')=='1'){
+                        //Detalles empresa
+                        $business_details = $this->businessUtil->getDetails($business_id);
+                        
+                        $location_details = BusinessLocation::find($input['location_id']);
+                        
+                        //detalle factura
+                        $invoice_layout = $this->businessUtil->invoiceLayout($business_id, $input['location_id'], $location_details->invoice_layout_id);
+                        
+                        //Generacion XML y Certificacion de facturas
+                        $felauth=$this->transactionUtil->GenerateXMLInfile($transaction->id,  $input['location_id'], $invoice_layout,$business_details, $location_details, 'printer');
+                        
+                    }else{
+                        $felauth ='';
+                    }     
                     //Auto send notification
                     $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
                 }
@@ -610,9 +632,10 @@ class SellPosController extends Controller
                 if (!$is_direct_sale) {
                     if ($input['status'] == 'draft') {
                         $msg = trans('sale.draft_added');
-
+                        $felauth =''; //LAESTRADA FEL
                         if ($input['is_quotation'] == 1) {
                             $msg = trans('lang_v1.quotation_added');
+                            $felauth =''; //LAESTRADA FEL
                             $print_invoice = true;
                         }
                     } elseif ($input['status'] == 'final') {
@@ -632,7 +655,7 @@ class SellPosController extends Controller
                     $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
                 }
 
-                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt];
+                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt, 'felauth' => $felauth ]; // se agrega 'felauth' => $felauth LAESTRADA
 
                 if (!empty($whatsapp_link)) {
                     $output['whatsapp_link'] = $whatsapp_link;

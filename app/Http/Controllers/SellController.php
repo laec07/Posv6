@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Spatie\Activitylog\Models\Activity;
 use Yajra\DataTables\Facades\DataTables;
+use App\FelConfiguration; // laestrada tabla fel configuration
 
 class SellController extends Controller
 {
@@ -422,6 +423,9 @@ class SellController extends Controller
                                     <li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?package_slip=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.packing_slip').'</a></li>';
 
                                 $html .= '<li><a href="#" class="print-invoice" data-href="'.route('sell.printInvoice', [$row->id]).'?delivery_note=true"><i class="fas fa-file-alt" aria-hidden="true"></i> '.__('lang_v1.delivery_note').'</a></li>';
+                                if(!empty($row->numeroautorizacion)){
+                                    $html .= '<li><a target="_blank" href="https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid='.$row->numeroautorizacion.'"  ><i class="fa fa-print" aria-hidden="true"></i> Factura FEL</a></li>';
+                               }
                             }
                             $html .= '<li class="divider"></li>';
                             if (! $only_shipments) {
@@ -751,6 +755,10 @@ class SellController extends Controller
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
 
         $change_return = $this->dummyPaymentLine;
+            //Configuration Fel LAESTRADA 2024
+            $felconfigurations = FelConfiguration::where('business_id', $business_id)
+            ->where('location_id', $default_location->id)
+            ->first();
 
         return view('sell.create')
             ->with(compact(
@@ -779,7 +787,8 @@ class SellController extends Controller
                 'is_order_request_enabled',
                 'users',
                 'default_price_group_id',
-                'change_return'
+                'change_return',
+                'felconfigurations'
             ));
     }
 
