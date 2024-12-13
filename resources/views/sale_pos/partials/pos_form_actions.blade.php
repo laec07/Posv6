@@ -113,7 +113,7 @@
                         id="pos-delete" @if (!empty($only_payment)) disabled @endif> <i
                             class="fas fa-trash-alt"></i> @lang('messages.delete')</button>
                 @endif
-                @if($felconfigurations->fel_active=="S")
+                @if(!empty($felconfigurations) && $felconfigurations->fel_active == "S")
                     @if($felconfigurations->fel_predeterm=="S")
                         <label><input type="checkbox" name="ffel" id="ffel" value="1"  checked>Factura FEL</label> <!-- Habilitar y deshabilitar facturacion Fel-->
                     @else
