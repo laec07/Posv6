@@ -934,20 +934,6 @@ class TransactionUtil extends Util
                         ->whereNotIn('amount', $denominations)
                         ->delete();
     }
-
-    /**
-     * Get payment line for a transaction
-     *
-     * @param  int  $transaction_id
-     * @return bool
-     */
-    public function getPaymentDetails($transaction_id)
-    {
-        $payment_lines = TransactionPayment::where('transaction_id', $transaction_id)->with(['denominations'])
-                    ->get()->toArray();
-
-        return $payment_lines;
-    }
 /**
      * Obtiene configuración Facturas Fel para bussines & location
      * LAESTRADA
@@ -980,9 +966,11 @@ class TransactionUtil extends Util
 
         return $felinvoice;
     }
+
     public function SavePosNumeroFel($numero_fel, $id_fel){
         $felinvoice = FelFacturas::where('numeroautorizacion', $id_fel)
         ->first();
+
         if ($felinvoice) {
             // Extraer el número después de "numero_"
             $numero = Str::after($felinvoice->fel_adic, 'numero_');
@@ -1006,6 +994,7 @@ class TransactionUtil extends Util
      */
     public function GenerateXMLInfile($transaction_id, $location_id, $invoice_layout, $business_details, $location_details)
     {
+
         
             // Fecha Actual
             $now = \Carbon::now();
@@ -1047,6 +1036,7 @@ class TransactionUtil extends Util
             $impuesto=0;
         
 
+
             $identificador = $business_details->id.$transaction_id.$transaction->invoice_no;
             
             if(empty($customer->email)){
@@ -1059,6 +1049,7 @@ class TransactionUtil extends Util
                 }
                 
             }
+
             //Generar XML
                 $xml = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8"?>
                 <dte:GTDocumento xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="0.1" xsi:schemaLocation="http://www.sat.gob.gt/dte/fel/0.2.0"></dte:GTDocumento>');
@@ -1119,6 +1110,7 @@ class TransactionUtil extends Util
                 // SAT -> DTE -> DatosEmision -> Items -> Item  
                 //Detalle de producto <<<<---
             foreach ($details['lines'] as $line) {
+				$lotVal = (!empty($line['lot_number'])) ? " ".$line['lot_number_label'].": ".$line['lot_number'] : "";//Mostrar lote en factura LAESTRADA																																		 
                 $bienoserv = ($line['enable_stock']=='1') ? 'B' : 'S' ; //Valida si es Bien o servicio
                 $num = (float)str_replace(',', '', $line['line_total_exc_tax_uf']); //Se formatea string a texto cuando por la , y . laec052023
                 $impuesto=$line['unit_price_inc_tax']*0.12;
@@ -1131,7 +1123,7 @@ class TransactionUtil extends Util
                 $precio= $cantidad * $prsunit;
                 $dte_Item->addChild('Cantidad', $cantidad);
                 $dte_Item->addChild('UnidadMedida',$line['units']);
-                $dte_Item->addChild('Descripcion', $line['name']);
+                $dte_Item->addChild('Descripcion', $line['name']. $lotVal );
                 $dte_Item->addChild('PrecioUnitario', $prsunit);
                 $dte_Item->addChild('Precio', $precio);
                 $dte_Item->addChild('Descuento',$totallinediscount);
@@ -1177,10 +1169,12 @@ class TransactionUtil extends Util
             //Convierte XML a base64
             // $archivo= base64_encode($xmlString);
             $client = new Client(); /**************  Cambiar la forma de consumir a XML    ********** */
+
             // Check if the directory exists, if not, create it
             // Define the path and file
             $directory = 'file_fel';
             $fileError3 = $directory . '/Cert' . $transaction_id . 'Error.txt';
+		 
             // Check if the directory exists, if not, create it
             if (!is_dir($directory)) {
                 mkdir($directory, 0777, true); // 0777 sets full permissions, and true allows the creation of nested directories
@@ -1206,6 +1200,7 @@ class TransactionUtil extends Util
             );
             
             $estado=$responsecert->getStatusCode();
+
             if($estado=='200'){
                 $resultadoj=$responsecert->getBody()->getContents(); // recibe un json  
                 $resultado = json_decode($resultadoj); //paso el json recibido a array
@@ -1215,6 +1210,7 @@ class TransactionUtil extends Util
                     # Acción si es correcto
                     // Guardar el XML Certificado en bd
                     $felfac= FelFacturas::create([
+														  
                         'id_transaction' => $transaction_id,
                         'bussines_id' => $location_id,
                         'invoice_no' => $transaction->invoice_no,
@@ -1236,6 +1232,8 @@ class TransactionUtil extends Util
                     //Numero negativo
                     $valneg = Str::substr($resultado->numero, 0, 1);
                     $this->SavePosNumeroFel($resultado->numero, $resultado->uuid);
+
+					
                     return $resultado->uuid;
                 
                 }else{
@@ -1256,16 +1254,19 @@ class TransactionUtil extends Util
                     file_put_contents($fileError3, $resultadoj);
                     throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$resultado->descripcion);
                 }
+
     
             
             }else{
                 //validación si respuesta es incorrecta
                 throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$estado);
             }
+
         }catch(\Exception $e){
             throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$e);
         }
     }
+
 
     /**
      * Anular facturas FEL LAESTRADA 2024.
@@ -1280,18 +1281,23 @@ class TransactionUtil extends Util
         // Fecha Actual
         $now = \Carbon::now();
         $Fecha = $now->format('Y-m-d');
+
         // Obtener datos de la factura y configuraciones FEL
         $fel = FelFacturas::where('id_transaction', $transaction_id)->firstOrFail();
         $felconfigurations = FelConfiguration::where('business_id', $id_business)
         ->where('location_id', $location_id)
         ->firstOrFail();
+
         // Crear el XML de anulación
         $xmlA = new \SimpleXMLElement('<?xml version="1.0" encoding="UTF-8" standalone="no"?><dte:GTAnulacionDocumento Version="0.1" xmlns:ds="http://www.w3.org/2000/09/xmldsig#" xmlns:dte="http://www.sat.gob.gt/dte/fel/0.1.0" xmlns:n1="http://www.altova.com/samplexml/other-namespace"><dte:SAT><dte:AnulacionDTE ID="DatosCertificados"><dte:DatosGenerales ID="DatosAnulacion" NumeroDocumentoAAnular="' . $fel->numeroautorizacion . '" NITEmisor="' . $felconfigurations->nit_emisor . '" IDReceptor="' . $fel->nitreceptor . '" FechaEmisionDocumentoAnular="' . $fel->fechacertificacion . 'T00:00:00-06:00" FechaHoraAnulacion="' . $Fecha . 'T00:00:00-06:00" MotivoAnulacion="Anulacion"/></dte:AnulacionDTE></dte:SAT></dte:GTAnulacionDocumento>');
+
         // Convertir XML a cadena
         $xmlStringA = $xmlA->asXML();
+
         // Cliente HTTP para enviar la solicitud POST
         $client = new \GuzzleHttp\Client(['verify' => false]);
         $resultado = null;
+
         try {
             $response = $client->post(
                 $felconfigurations->link_certificar,
@@ -1307,15 +1313,18 @@ class TransactionUtil extends Util
                     'body' => $xmlStringA
                 ]
             );
+
             $estado = $response->getStatusCode();
             $resultadoanul = $response->getBody()->getContents(); // recibe un json  
             $resultado = json_decode($resultadoanul); // Convertir el json recibido a objeto
+
             if ($estado == 200) {
                 if ($resultado->resultado == 'true') {
                     // Guardar el XML Certificado en la base de datos
                     $fel->fel_anulado = $resultado->xml_certificado;
                     $fel->estado = 'ANUL';
                     $fel->update();
+
                     return $fel->numeroautorizacion;
                 } else {
                     // Guardar el error en un archivo
@@ -1324,13 +1333,20 @@ class TransactionUtil extends Util
                     throw new PurchaseSellMismatch("Error al anular documento con SAT: " . $resultado->descripcion);
                 }
             } else {
-                throw new PurchaseSellMismatch("Error al anular documento con SAT: " . $estado);
+				 // Guardar el error en un archivo
+                $fileError = 'file_fel/ANUL' . $transaction_id . 'Error.txt';
+                file_put_contents($fileError, $resultadoanul);
+                throw new PurchaseSellMismatch("Error al anular documento con SAT: " . $resultado->descripcion);								 
             }
         } catch (\Throwable $th) {
             $mensajeError = $resultado ? $resultado->mensaje_error : $th->getMessage();
             throw new PurchaseSellMismatch("Excepción al anular documento con SAT: " . $mensajeError);
         }
+							  
+																				   
+																								   
     }
+ 
     /**
      * Gives the receipt details in proper format.
      *
