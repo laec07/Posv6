@@ -1015,7 +1015,7 @@ return [
     'generated_recurring_expense' => 'Gasto recurrente generado',
     'select_contacts' => 'Seleccionar contactos',
     'middle_name' => 'Segundo nombre',
-    'address_line_1' => 'Dirección Línea 1',
+    'address_line_1' => 'Dirección Línea 1 (fel)',
     'address_line_2' => 'Línea de dirección 2',
     'dob' => 'Fecha de nacimiento',
     'dob_ins' => 'Formato Y-m-d',
@@ -1344,6 +1344,10 @@ return [
     'kitchen_order' => 'Orden de cocina',
     'kitchen_order_tooltip' => 'El pedido se enviará a la cocina solo si esta opción está marcada',
     'disable_quotation' => 'Desactivar Cotización',
+    'statement' => 'Estado de cuenta', //LAESTRADA
+    'current' => 'Actual',//LAESTRADA
+    '1_30_days_past_due' => '1-30 dias',//LAESTRADA
+    '30_60_days_past_due' => '30-60 dias',//LAESTRADA
     'disable_card' => 'Desactivar Tarjeta',
     'assigned_to' => 'Asignado a',
     'has_no_sell_from' => 'No tiene venta desde',
