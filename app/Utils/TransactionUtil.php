@@ -1110,15 +1110,16 @@ class TransactionUtil extends Util
                 // SAT -> DTE -> DatosEmision -> Items -> Item  
                 //Detalle de producto <<<<---
             foreach ($details['lines'] as $line) {
+                //DD($line);
 				$lotVal = (!empty($line['lot_number'])) ? " ".$line['lot_number_label'].": ".$line['lot_number'] : "";//Mostrar lote en factura LAESTRADA																																		 
                 $bienoserv = ($line['enable_stock']=='1') ? 'B' : 'S' ; //Valida si es Bien o servicio
-                $num = (float)str_replace(',', '', $line['line_total_exc_tax_uf']); //Se formatea string a texto cuando por la , y . laec052023
+                $num = (float)str_replace(',', '', $line['line_total_uf']); //Se formatea string a texto cuando por la , y . laec052023 / precio unitario  con impuesto incluido LAESTRADA 12122024
                 $impuesto=$line['unit_price_inc_tax']*0.12;
                 $dte_Item = $dte_Items->addChild('dte:Item');
                 $dte_Item->addAttribute('BienOServicio', $bienoserv);
                 $dte_Item->addAttribute('NumeroLinea', $Corr);
                 $cantidad=(float)str_replace(',', '', $line['quantity']); //Se formatea string a texto cuando por la , y . laec052023
-                $prsunit =(float)str_replace(',', '', ($line['unit_price_before_discount']));
+                $prsunit =(float)str_replace(',', '', ($line['unit_price_inc_tax']));// precio unitario  con impuesto incluido LAESTRADA 12122024
                 $totallinediscount =(float)str_replace(',', '', ($line['total_line_discount']));
                 $precio= $cantidad * $prsunit;
                 $dte_Item->addChild('Cantidad', $cantidad);
@@ -1163,8 +1164,8 @@ class TransactionUtil extends Util
             $xmlString = $xml->asXML();
 
             // Generar y guardad archivo FEl para testear errores
-           // $fileError3 = 'file_fel/XML_'.$transaction_id.'SNCERT.txt';
-           // file_put_contents($fileError3, $xmlString);
+            //$fileError3 = 'file_fel/XML_'.$transaction_id.'SNCERT.txt';
+           //file_put_contents($fileError3, $xmlString);
 
             //Convierte XML a base64
             // $archivo= base64_encode($xmlString);
@@ -1263,6 +1264,7 @@ class TransactionUtil extends Util
             }
 
         }catch(\Exception $e){
+            
             throw new PurchaseSellMismatch("Error al Certificar documento con SAT".$e);
         }
     }
