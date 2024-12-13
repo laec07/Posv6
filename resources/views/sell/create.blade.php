@@ -237,17 +237,16 @@
 					<div class="form-group">
 					
 						<div class="switch-button">
-							@if($felconfigurations->fel_active=="S")
-							{!! Form::label('fel_active',  __('Factura Fel') . ':') !!}
-								@if($felconfigurations->fel_predeterm=="S")
-									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox"  checked><!-- Habilitar y deshabilitar facturacion Fel-->
+							@if(!empty($felconfigurations) && $felconfigurations->fel_active == "S")
+								{!! Form::label('fel_active', __('Factura Fel') . ':') !!}
+								@if($felconfigurations->fel_predeterm == "S")
+									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox" checked>
 									<label for="ffel" class="switch-button__label"></label>
 								@else
-									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox" > <!-- Habilitar y deshabilitar facturacion Fel-->
+									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox">
 									<label for="ffel" class="switch-button__label"></label>
 								@endif
 							@endif
-							
 						</div>
 						
 					</div>
