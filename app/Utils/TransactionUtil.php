@@ -1110,7 +1110,7 @@ class TransactionUtil extends Util
                 // SAT -> DTE -> DatosEmision -> Items -> Item  
                 //Detalle de producto <<<<---
             foreach ($details['lines'] as $line) {
-                //DD($line);
+                //DD($transaction);
 				$lotVal = (!empty($line['lot_number'])) ? " ".$line['lot_number_label'].": ".$line['lot_number'] : "";//Mostrar lote en factura LAESTRADA																																		 
                 $bienoserv = ($line['enable_stock']=='1') ? 'B' : 'S' ; //Valida si es Bien o servicio
                 $num = (float)str_replace(',', '', $line['line_total_uf']); //Se formatea string a texto cuando por la , y . laec052023 / precio unitario  con impuesto incluido LAESTRADA 12122024
@@ -1152,7 +1152,7 @@ class TransactionUtil extends Util
                 $dte_TotalImpuesto->addAttribute('NombreCorto', 'IVA');
                 $dte_TotalImpuesto->addAttribute('TotalMontoImpuesto', number_format($impuestoTotal,2, '.', ''));
                 // SAT -> DTE -> DatosEmision -> Totales -> GranTotal  
-                $dte_Totales->addChild('GranTotal', $transaction->final_total );
+                $dte_Totales->addChild('GranTotal', $transaction->total_before_tax );
                 // SAT -> DTE
                 $dte_Adenda = $dte_SAT->addChild('dte:Adenda');
                 $dte_Adenda->addChild('Codigo_cliente', $customer->id);//parametrizar
@@ -1164,9 +1164,9 @@ class TransactionUtil extends Util
             $xmlString = $xml->asXML();
 
             // Generar y guardad archivo FEl para testear errores
-            //$fileError3 = 'file_fel/XML_'.$transaction_id.'SNCERT.txt';
-           //file_put_contents($fileError3, $xmlString);
-
+            $fileError3 = 'file_fel/XML_'.$transaction_id.'SNCERT.txt';
+           file_put_contents($fileError3, $xmlString);
+            //return 1;
             //Convierte XML a base64
             // $archivo= base64_encode($xmlString);
             $client = new Client(); /**************  Cambiar la forma de consumir a XML    ********** */
