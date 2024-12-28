@@ -233,6 +233,24 @@
 						</div>
 					</div>
 				@endif
+				<div class="col-sm-3"> <!-- laestrada FEL -->
+					<div class="form-group">
+					
+						<div class="switch-button">
+							@if(!empty($felconfigurations) && $felconfigurations->fel_active == "S")
+								{!! Form::label('fel_active', __('Factura Fel') . ':') !!}
+								@if($felconfigurations->fel_predeterm == "S")
+									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox" checked>
+									<label for="ffel" class="switch-button__label"></label>
+								@else
+									<input type="checkbox" name="ffel" id="ffel" value="1" class="switch-button__checkbox">
+									<label for="ffel" class="switch-button__label"></label>
+								@endif
+							@endif
+						</div>
+						
+					</div>
+				</div><!-- laestrada fin -->
 					@can('edit_invoice_number')
 					<div class="col-sm-3">
 						<div class="form-group">

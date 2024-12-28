@@ -71,6 +71,7 @@
                             <th>@lang('sale.invoice_no')</th>
                             <th>@lang('sale.customer_name')</th>
                             <th>@lang('lang_v1.contact_no')</th>
+                            <th>Número de DTE</th><!-- laestrada para Documentos Tributarios eléctronicos -->
                             <th>@lang('sale.location')</th>
                             <th>@lang('sale.payment_status')</th>
                             <th>@lang('lang_v1.payment_method')</th>
@@ -211,6 +212,9 @@
                         data: 'conatct_name',
                         name: 'conatct_name'
                     },
+                    { data: 'numerofel', 
+                      name: 'fel.numerofel'
+                    }, //  laestrada  FEL, corregir error datatable usar nombre del select en el name
                     {
                         data: 'mobile',
                         name: 'contacts.mobile'
