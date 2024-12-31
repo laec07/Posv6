@@ -1120,13 +1120,14 @@ class TransactionUtil extends Util
                 $dte_Item->addAttribute('NumeroLinea', $Corr);
                 $cantidad=(float)str_replace(',', '', $line['quantity']); //Se formatea string a texto cuando por la , y . laec052023
                 $totallinediscount =(float)str_replace(',', '', ($line['total_line_discount']));
-                $prsunit =(float)str_replace(',', '', ($line['unit_price_inc_tax'])) + $totallinediscount;// precio unitario  con impuesto incluido LAESTRADA 12122024 se suma descuento para evitar error montos grabables
+                $totallinediscount_Unit =(float)str_replace(',', '', ($line['line_discount_uf']));
+                $prsunit =(float)str_replace(',', '', ($line['unit_price_inc_tax'])) + $totallinediscount_Unit;// precio unitario  con impuesto incluido LAESTRADA 12122024 se suma descuento para evitar error montos grabables
                 $precio= $cantidad * $prsunit;
                 $dte_Item->addChild('Cantidad', $cantidad);
                 $dte_Item->addChild('UnidadMedida',$line['units']);
                 $dte_Item->addChild('Descripcion', $line['name']. $lotVal );
                 $dte_Item->addChild('PrecioUnitario', $prsunit);
-                $dte_Item->addChild('Precio', $precio);
+                $dte_Item->addChild('Precio', round($precio,2));
                 $dte_Item->addChild('Descuento',$totallinediscount);
                 // SAT -> DTE -> DatosEmision -> Items -> Item -> Impuestos
                 $dte_Impuestos = $dte_Item->addChild('dte:Impuestos');
@@ -1165,7 +1166,7 @@ class TransactionUtil extends Util
 
             // Generar y guardad archivo FEl para testear errores
             $fileError3 = 'file_fel/XML_'.$transaction_id.'SNCERT.txt';
-           file_put_contents($fileError3, $xmlString);
+            file_put_contents($fileError3, $xmlString);
             //return 1;
             //Convierte XML a base64
             // $archivo= base64_encode($xmlString);
