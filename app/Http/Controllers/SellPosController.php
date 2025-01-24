@@ -335,9 +335,11 @@ class SellPosController extends Controller
                 $input['status'] = 'draft';
                 $input['is_quotation'] = 1;
                 $input['sub_status'] = 'quotation';
+                $felauth ='';
             } elseif ($input['status'] == 'proforma') {
                 $input['status'] = 'draft';
                 $input['sub_status'] = 'proforma';
+                $felauth ='';
             }
 
             //Add change return

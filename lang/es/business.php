@@ -75,7 +75,7 @@
      'business_location_updated_success' => 'Ubicación comercial actualizada con éxito',
      'location' => 'Ubicación',
      'already_registered' => '¿Ya registrado?',
-     'sign_in' => 'Registrarse',
+     'sign_in' => 'Ingresar',
      'not_yet_registered' => '¿Todavía no está registrado?',
      'register_now' => 'Regístrate ahora',
      'system' => 'Sistema',
@@ -86,7 +86,7 @@
      'settings' => 'Configuraciones',
      'transaction_edit_days' => 'Días de edición de transacción',
      'dashboard' => 'Tablero',
-     'view_stock_expiry_alert_for' => 'Ver Alerta de esxpiración de stocl para', /* modified */
+     'view_stock_expiry_alert_for' => 'Ver Alerta de esxpiración de stock para', /* modified */
      'days' => 'Dias',
      'system_settings' => 'Ajustes del sistema',
      'add_keyboard_shortcuts' => 'Agregar atajos de teclado',

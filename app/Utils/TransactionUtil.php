@@ -934,7 +934,15 @@ class TransactionUtil extends Util
                         ->whereNotIn('amount', $denominations)
                         ->delete();
     }
-/**
+
+    public function getPaymentDetails($transaction_id)
+    {
+        $payment_lines = TransactionPayment::where('transaction_id', $transaction_id)->with(['denominations'])
+                    ->get()->toArray();
+
+        return $payment_lines;
+    }
+    /**
      * Obtiene configuración Facturas Fel para bussines & location
      * LAESTRADA
      * @param business_id
