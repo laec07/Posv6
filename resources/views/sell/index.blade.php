@@ -212,13 +212,13 @@
                         data: 'conatct_name',
                         name: 'conatct_name'
                     },
-                    { data: 'numerofel', 
-                      name: 'fel.numerofel'
-                    }, //  laestrada  FEL, corregir error datatable usar nombre del select en el name
                     {
                         data: 'mobile',
                         name: 'contacts.mobile'
                     },
+                    { data: 'numerofel', 
+                      name: 'fel.numerofel'
+                    }, //  laestrada  FEL, corregir error datatable usar nombre del select en el name
                     {
                         data: 'business_location',
                         name: 'bl.name'

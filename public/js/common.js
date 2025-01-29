@@ -331,6 +331,11 @@ ranges[LANG.last_financial_year] = [
     moment(financial_year.end._i).subtract(1, 'year'),
 ];
 
+ranges[LANG.year_combined] = [
+    moment().subtract(1, 'year').startOf('year'),
+    moment().endOf('year')
+];
+
 var dateRangeSettings = {
     ranges: ranges,
     startDate: financial_year.start,

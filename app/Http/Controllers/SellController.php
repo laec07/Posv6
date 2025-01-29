@@ -180,7 +180,6 @@ class SellController extends Controller
 
             if (! empty(request()->input('payment_status')) && request()->input('payment_status') != 'overdue') {
 																									 
-                $sells->where('transactions.payment_status', request()->input('payment_status'));
 				if (request()->input('payment_status') == 'due') {//Se agrega condicion para cuando sea due, muestre las partial y las due LAESTRADA
                     $sells->whereIn('transactions.payment_status', ['due', 'partial']);
                 }else{
