@@ -14,6 +14,9 @@
 @endforeach
 
 <tr class="product_row" data-row_index="{{$row_count}}" @if(!empty($so_line)) data-so_id="{{$so_line->transaction_id}}" @endif>
+	@if(!empty($is_serial_no))
+		<td class="serial_no" ></td>
+	@endif
 	<td>
 		@if(!empty($so_line))
 			<input type="hidden" 
@@ -41,7 +44,7 @@
 						{{asset('/uploads/img/' . rawurlencode($product->product_image))}}
 					@else
 						{{asset('/img/default.png')}}
-					@endif" alt="product-img" loading="lazy"style="height: 100%;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
+					@endif" alt="product-img" loading="lazy"style="height:50px;display: inline;margin-left: 3px; border: black;border-radius: 5px; margin-top: 5px; width: 50px;object-fit: cover;">
 
 
 		<input type="hidden" class="enable_sr_no" value="{{$product->enable_sr_no}}">

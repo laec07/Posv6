@@ -13,7 +13,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <div
-                    class="tw-transition-all tw-mb-4 lg:tw-col-span-2 xl:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+                    class="tw-transition-all tw-mb-4 lg:tw-col-span-2 xl:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
                     <div class="tw-p-4 sm:tw-p-5">
                         <div class="tw-flex tw-items-center tw-gap-2.5">
                             <svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5 tw-text-sky-500 tw-shrink-0"
@@ -96,7 +96,7 @@
             </div>
             <div class="col-sm-12">
                 <div
-                    class="tw-transition-all tw-mb-4 lg:tw-col-span-2 xl:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+                    class="tw-transition-all tw-mb-4 lg:tw-col-span-2 xl:tw-col-span-2 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
                     <div class="tw-p-4 sm:tw-p-5">
                         <div class="tw-flex tw-items-center tw-gap-2.5">
 							<svg xmlns="http://www.w3.org/2000/svg" class="tw-size-5 tw-text-sky-500 tw-shrink-0"  version="1.1" width="256" height="256" viewBox="0 0 256 256" xml:space="preserve">
@@ -156,6 +156,7 @@
                 dom: 'lfrtip',
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: '{{ action([\Modules\Superadmin\Http\Controllers\CommunicatorController::class, 'getHistory']) }}'
             });
 

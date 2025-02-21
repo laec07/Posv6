@@ -255,5 +255,9 @@ return [
     'applied_on_business_help_text' => 'که هیڅ تجارت انتخاب نشوی، به همه کارولی شی',
     'invalid_coupon' => 'ناړېدلې کوپون',
     'coupon_not_matched_with_package' => 'کود دا پلان کې اطلاق نشته',
-    'coupon_not_matched_with_business' => 'کود دا کارپلان کې اطلاق نشته'
+    'coupon_not_matched_with_business' => 'کود دا کارپلان کې اطلاق نشته',
+    'custom_link_help_text' => 'که تاسو ګمرک لینک اضافه کړئ، کله چې یو پیرودونکی په پیکج پاڼه کې دا پیکج غوره کړي، دا به لینک ته لاړ شي.',
+    'paid_via' => 'د لارې تادیه',
+    'payment_transaction_id' => 'د تادیې ټرانزکشن آی ډی',
+    'remaining' => 'باقي',
 ];

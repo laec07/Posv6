@@ -22,4 +22,6 @@
      'expense_update_success' => 'Aufwand erfolgreich aktualisiert',
      'expense_delete_success' => 'Aufwand erfolgreich gelöscht',
      'expense_for' => 'Aufwand für',
+     'expense_for_help' => '选择与费用相关的用户（电子邮件/用户名）（可选）',
+    'import_expense' => '导入费用'
  ];

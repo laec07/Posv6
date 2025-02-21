@@ -113,7 +113,7 @@
                                         <path d="M12 17l0 .01" />
                                         <path d="M12 13.5a1.5 1.5 0 0 1 1 -1.5a2.6 2.6 0 1 0 -3 -4" />
                                     </svg>
-                                    Application Tour
+                                    @lang('lang_v1.application_tour')
                                 </a>
                             @endif
                         </div>
@@ -208,7 +208,7 @@
                         role="menu" tabindex="-1">
                         <div class="tw-px-4 tw-pt-3 tw-pb-1" role="none">
                             <p class="tw-text-sm" role="none">
-                                Signed in as
+                                @lang('lang_v1.signed_in_as')
                             </p>
                             <p class="tw-text-sm tw-font-medium tw-text-gray-900 tw-truncate" role="none">
                                 {{ Auth::User()->first_name }} {{ Auth::User()->last_name }}

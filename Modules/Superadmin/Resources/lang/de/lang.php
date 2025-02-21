@@ -257,4 +257,8 @@ return [
     'invalid_coupon' => 'Ungültiger Coupon',
     'coupon_not_matched_with_package' => 'Code nicht in diesem Plan anwendbar',
     'coupon_not_matched_with_business' => 'Code nicht in diesem Geschäft anwendbar',
+    'custom_link_help_text' => 'Wenn Sie einen benutzerdefinierten Link hinzufügen, wird der Kunde, wenn er dieses Paket auf der Paketseite auswählt, zum Link weitergeleitet.',
+    'paid_via' => 'Bezahlt über',
+    'payment_transaction_id' => 'Zahlungstransaktions-ID',
+    'remaining' => 'Verbleibend',
 ];

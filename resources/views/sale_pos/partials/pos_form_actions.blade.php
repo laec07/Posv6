@@ -113,13 +113,7 @@
                         id="pos-delete" @if (!empty($only_payment)) disabled @endif> <i
                             class="fas fa-trash-alt"></i> @lang('messages.delete')</button>
                 @endif
-                @if(!empty($felconfigurations) && $felconfigurations->fel_active == "S")
-                    @if($felconfigurations->fel_predeterm=="S")
-                        <label><input type="checkbox" name="ffel" id="ffel" value="1"  checked>Factura FEL</label> <!-- Habilitar y deshabilitar facturacion Fel-->
-                    @else
-                        <label><input type="checkbox" name="ffel" id="ffel" value="1"  >Factura FEL</label> <!-- Habilitar y deshabilitar facturacion Fel-->
-                    @endif
-			    @endif
+
                 @if (!$is_mobile)
                     {{-- <div class="bg-navy pos-total text-white ">
 					<span class="text">@lang('sale.total_payable')</span>
@@ -130,8 +124,8 @@
                     <div class="pos-total md:tw-flex md:tw-items-center md:tw-gap-3 tw-hidden">
                         <div
                             class="tw-text-black tw-font-bold tw-text-base md:tw-text-2xl tw-flex tw-items-center tw-flex-col">
-                            <div>Total</div>
-                            <div>Payable:</div>
+                            <div>@lang('sale.total')</div>
+                            <div>@lang('lang_v1.payable'):</div>
                         </div>
                         <input type="hidden" name="final_total" id="final_total_input" value="0.00">
                         <span id="total_payable"

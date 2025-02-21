@@ -252,4 +252,7 @@ return [
     'paypal_step_4' => "4. Sélectionnez le type d'application en tant que Marchand.",
     'paypal_step_5' => '5. Cliquez sur le bouton "Créer une application" de couleur bleue pour soumettre le formulaire.',
     'paypal_step_6' => "6. Copiez l'identifiant client et la clé secrète.",
+    'paid_via' => 'Payé via',
+    'payment_transaction_id' => 'ID de transaction de paiement',
+    'remaining' => 'Restant',
 ];

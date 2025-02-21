@@ -257,4 +257,8 @@ return [
     'invalid_coupon' => 'Ongeldige Coupon',
     'coupon_not_matched_with_package' => 'Code niet toepasbaar in dit plan',
     'coupon_not_matched_with_business' => 'Code niet toepasbaar in dit bedrijf',
+    'custom_link_help_text' => 'Als je een aangepaste link toevoegt, gaat het naar de link wanneer een klant dit pakket selecteert op de pakketpagina.',
+    'paid_via' => 'Betaald via',
+    'payment_transaction_id' => 'Betalingstransactie-ID',
+    'remaining' => 'Resterend',
 ];

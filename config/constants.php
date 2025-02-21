@@ -33,7 +33,7 @@ return [
     'document_size_limit' => '5000000', //in Bytes,
     'image_size_limit' => '5000000', //in Bytes
 
-    'asset_version' => 600,
+    'asset_version' => 610,
 
     'disable_purchase_in_other_currency' => true,
 
@@ -52,6 +52,7 @@ return [
     'new_notification_count_interval' => 60, //Interval to check for new notifications in seconds;Default is 60sec
 
     'administrator_usernames' => env('ADMINISTRATOR_USERNAMES'),
+    'SHOW_REPAIR_STATUS_LOGIN_SCREEN' => env('SHOW_REPAIR_STATUS_LOGIN_SCREEN', true),
     'allow_registration' => env('ALLOW_REGISTRATION', true),
     'app_title' => env('APP_TITLE'),
 

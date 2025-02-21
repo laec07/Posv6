@@ -32,5 +32,6 @@ return [
     'expense_update_success' => 'Cheltuiala actualizata cu succes',
     'expense_delete_success' => 'Cheltuiala stearsa cu succes',
     'expense_for' => 'Cheltuiala pentru',
-
+    'expense_for_help' => 'Alegeți utilizatorul (email/nume de utilizator) pentru care este asociată cheltuiala (Opțional)',
+    'import_expense' => 'Importă cheltuiala'
 ];

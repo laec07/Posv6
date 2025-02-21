@@ -17,5 +17,6 @@
     "AiAssistance": true,
     "Hms": true,
     "InboxReport": true,
-    "CustomDashboard": true
+    "CustomDashboard": true,
+    "Gym": true
 }

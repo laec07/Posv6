@@ -17,7 +17,7 @@
 			$count++;
 		@endphp
 		@include('superadmin::subscription.partials.package_card')
-	@elseif(Route::current()->getName() == 'pricing' && is_null($package->businesses))
+	@elseif(Route::current()->getName() == 'package_duration_update' && is_null($package->businesses))
 		@php
 			$count++;
 		@endphp

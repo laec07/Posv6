@@ -261,7 +261,7 @@ class SellPosController extends Controller
 
         //Added check because $users is of no use if enable_contact_assign if false
         $users = config('constants.enable_contact_assign') ? User::forDropdown($business_id, false, false, false, true) : [];
-
+        
         //Configuration Fel LAESTRADA 2024
         $felconfigurations = FelConfiguration::where('business_id', $business_id)
         ->where('location_id', $default_location->id)
@@ -300,7 +300,7 @@ class SellPosController extends Controller
                 'default_invoice_schemes',
                 'invoice_layouts',
                 'users',
-                'felconfigurations', 
+                'felconfigurations',
             ));
     }
 
@@ -602,7 +602,7 @@ class SellPosController extends Controller
                         
                     }else{
                         $felauth ='';
-                    }     
+                    }
                     //Auto send notification
                     $whatsapp_link = $this->notificationUtil->autoSendNotification($business_id, 'new_sale', $transaction, $transaction->contact);
                 }
@@ -657,7 +657,7 @@ class SellPosController extends Controller
                     $receipt = $this->receiptContent($business_id, $input['location_id'], $transaction->id, null, false, true, $invoice_layout_id);
                 }
 
-                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt, 'felauth' => $felauth ]; // se agrega 'felauth' => $felauth LAESTRADA
+                $output = ['success' => 1, 'msg' => $msg, 'receipt' => $receipt];
 
                 if (!empty($whatsapp_link)) {
                     $output['whatsapp_link'] = $whatsapp_link;
@@ -1606,7 +1606,7 @@ class SellPosController extends Controller
                 $quantity = $sell_line->quantity - $sell_line->so_quantity_invoiced;
                 $sell_line->qty_available = $quantity;
                 $sell_line->formatted_qty_available = $this->transactionUtil->num_f($quantity);
-                $sell_line_row = $this->getSellLineRow($sell_line->variation_id, $sales_order->location_id, $quantity, $row_count, true, $sell_line);
+                $sell_line_row = $this->getSellLineRow($sell_line->variation_id, $sales_order->location_id, $quantity, $row_count, true, false, $sell_line);
                 $html .= $sell_line_row['html_content'];
                 $row_count++;
             }
@@ -1618,8 +1618,8 @@ class SellPosController extends Controller
             'sales_order' => $sales_order,
         ];
     }
-
-    private function getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $so_line = null)
+    // is_serial_no to display serial number in sale screen
+    private function getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $is_serial_no, $so_line = null)
     {
         $business_id = request()->session()->get('user.business_id');
         $business_details = $this->businessUtil->getDetails($business_id);
@@ -1721,7 +1721,7 @@ class SellPosController extends Controller
             }
 
             $output['html_content'] = view('sale_pos.product_row')
-                ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line'))
+                ->with(compact('product', 'row_count', 'tax_dropdown', 'enabled_modules', 'pos_settings', 'sub_units', 'discount', 'waiters', 'edit_discount', 'edit_price', 'purchase_line_id', 'warranties', 'quantity', 'is_direct_sell', 'so_line', 'is_sales_order', 'last_sell_line', 'is_serial_no'))
                 ->render();
         }
 
@@ -1768,6 +1768,11 @@ class SellPosController extends Controller
                 $is_direct_sell = true;
             }
 
+            $is_serial_no = false;
+            if (request()->get('is_serial_no') == 'true') {
+                $is_serial_no = true;
+            }
+
             if ($variation_id == 'null' && !empty($weighing_barcode)) {
                 $product_details = $this->__parseWeighingBarcode($weighing_barcode);
                 if ($product_details['success']) {
@@ -1781,7 +1786,7 @@ class SellPosController extends Controller
                 }
             }
 
-            $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell);
+            $output = $this->getSellLineRow($variation_id, $location_id, $quantity, $row_count, $is_direct_sell, $is_serial_no);
 
             if ($this->transactionUtil->isModuleEnabled('modifiers') && !$is_direct_sell) {
                 $variation = Variation::find($variation_id);

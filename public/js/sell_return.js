@@ -32,7 +32,6 @@ $(document).ready(function() {
                             toastr.success(result.msg);
                             //Check if enabled or not
                             if (result.receipt.is_enabled) {
-                                fel_print(result.felauth);
                                 pos_print(result.receipt);
                             }
                         } else {
@@ -81,16 +80,6 @@ function pos_print(receipt) {
             document.title = title;
         }, 1000);
     }
-}
-
-function fel_print(felauth) {
-	urlExterna = 'https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid='+felauth;
-    // Impresión de la factura utilizando el tipo de impresora "browser"
-    // y la facturación electrónica de LAEC 2023
-	console.log(urlExterna);
-    setTimeout(function(){
-        window.open(urlExterna);
-    }, 2000);
 }
 
 // //Set the location and initialize printer

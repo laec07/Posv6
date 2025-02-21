@@ -29,7 +29,7 @@
         ]) !!}
 
         <div
-            class="tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            class="tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
                 <div class="tw-flow-root tw-mt-5 tw-border-b tw-border-gray-200">
                     <div class="tw-mx-4 tw--my-2-auto sm:tw--mx-5">
@@ -172,6 +172,7 @@
                                         {!! Form::checkbox('enable_custom_link', 1, false, ['class' => 'input-icheck', 'id' => 'enable_custom_link']) !!}
                                         {{ __('superadmin::lang.enable_custom_subscription_link') }}
                                     </label>
+                                    @show_tooltip(__('superadmin::lang.custom_link_help_text'))
                                 </div>
                             </div>
                             <div id="custom_link_div" class="hide">

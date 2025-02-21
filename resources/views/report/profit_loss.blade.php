@@ -106,6 +106,10 @@
                             <a href="#profit_by_day" data-toggle="tab" aria-expanded="true"><i class="fa fa-calendar"
                                     aria-hidden="true"></i> @lang('lang_v1.profit_by_day')</a>
                         </li>
+                        <li>
+                            <a href="#profit_by_service_staff" data-toggle="tab" aria-expanded="true"><i class="fa fa-user-secret"
+                                    aria-hidden="true"></i> @lang('lang_v1.profit_by_service_staff')</a>
+                        </li>
                     </ul>
 
                     <div class="tab-content">
@@ -135,6 +139,9 @@
 
                         <div class="tab-pane" id="profit_by_customer">
                             @include('report.partials.profit_by_customer')
+                        </div>
+                        <div class="tab-pane" id="profit_by_service_staff">
+                            @include('report.partials.profit_by_service_staff')
                         </div>
 
                         <div class="tab-pane" id="profit_by_day">
@@ -444,6 +451,49 @@
                         });
                     } else {
                         profit_by_customers_table.ajax.reload();
+                    }
+                } else if (target == '#profit_by_service_staff') {
+                    if (typeof profit_by_service_staffs_table == 'undefined') {
+                        
+                        profit_by_service_staffs_table = $('#profit_by_service_staff_table').DataTable({
+                            processing: true,
+                            serverSide: true,
+                            fixedHeader:false,
+                            "ajax": {
+                                "url": "/reports/get-profit/service_staff",
+                                "data": function(d) {
+                                    d.start_date = $('#profit_loss_date_filter')
+                                        .data('daterangepicker')
+                                        .startDate.format('YYYY-MM-DD');
+                                    d.end_date = $('#profit_loss_date_filter')
+                                        .data('daterangepicker')
+                                        .endDate.format('YYYY-MM-DD');
+                                    d.location_id = $('#profit_loss_location_filter').val();
+                                }
+                            },
+                            columns: [{
+                                    data: 'staff_name',
+                                    name: 'U.first_name'
+                                },
+                                {
+                                    data: 'gross_profit',
+                                    "searchable": false
+                                },
+                            ],
+                            footerCallback: function(row, data, start, end, display) {
+                                var total_profit = 0;
+                                for (var r in data) {
+                                    total_profit += $(data[r].gross_profit).data('orig-value') ?
+                                        parseFloat($(data[r].gross_profit).data('orig-value')) :
+                                        0;
+                                }
+
+                                $('#profit_by_service_staff_table .footer_total').html(
+                                    __currency_trans_from_en(total_profit));
+                            },
+                        });
+                    } else {
+                        profit_by_service_staffs_table.ajax.reload();
                     }
                 } else if (target == '#profit_by_day') {
                     var start_date = $('#profit_loss_date_filter')

@@ -255,5 +255,9 @@ return [
     'applied_on_business_help_text' => 'Jika tidak ada bisnis yang dipilih, dapat diterapkan untuk semua',
     'invalid_coupon' => 'Kupon Tidak Valid',
     'coupon_not_matched_with_package' => 'Kode tidak berlaku dalam paket ini',
-    'coupon_not_matched_with_business' => 'Kode tidak berlaku dalam bisnis ini'
+    'coupon_not_matched_with_business' => 'Kode tidak berlaku dalam bisnis ini',
+    'custom_link_help_text' => 'Jika Anda menambahkan tautan khusus, ketika pelanggan memilih paket ini di halaman paket, akan menuju ke tautan tersebut.',
+    'paid_via' => 'Dibayar Melalui',
+    'payment_transaction_id' => 'ID Transaksi Pembayaran',
+    'remaining' => 'Tersisa',
 ];

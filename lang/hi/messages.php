@@ -30,4 +30,7 @@
      'purchase_sell_mismatch_exception' => 'त्रुटि: अनुमति नहीं: बेची गई और खरीद मात्रा के बीच बेमेल। उत्पाद: :product',
      'purchase_stock_adjustment_mismatch_exception' => 'त्रुटि: अनुमति नहीं: शेयर समायोजन और खरीद मात्रा के बीच बेमेल। उत्पाद: :product',
      'transaction_edit_not_allowed' => ':days दिनों के बाद लेन-देन संपादन की अनुमति नहीं है।',
+     'print_detailed' => 'विस्तृत प्रिंट करें',
+    'print_mini' => 'मिनी प्रिंट करें',
+    'opening' => 'खोलना',
  ];

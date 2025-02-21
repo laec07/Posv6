@@ -257,4 +257,8 @@ return [
     'invalid_coupon' => 'Kupon i pavlefshëm',
     'coupon_not_matched_with_package' => 'Kodi nuk aplikohet në këtë plan',
     'coupon_not_matched_with_business' => 'Kodi nuk aplikohet në këtë biznes',
+    'custom_link_help_text' => 'Nëse shtoni një lidhje të personalizuar, kur një klient zgjedh këtë paketë në faqen e paketës, do të shkojë te lidhja.',
+    'paid_via' => 'Paguaj me',
+    'payment_transaction_id' => 'ID e transaksionit të pagesës',
+    'remaining' => 'Mbetur',
 ];

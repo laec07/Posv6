@@ -31,13 +31,17 @@ class Package extends Model
      *
      * @return object
      */
-    public static function listPackages($exlude_private = false)
+    public static function listPackages($exlude_private = false, $interval = null)
     {
         $packages = Package::active()
                         ->orderby('sort_order');
 
         if ($exlude_private) {
             $packages->notPrivate();
+        }
+
+        if (!empty($interval)) {
+            $packages->where('interval', $interval);
         }
 
         return $packages->get();

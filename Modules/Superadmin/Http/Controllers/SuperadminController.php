@@ -65,6 +65,7 @@ class SuperadminController extends Controller
         $end = Carbon::today();
         $subscriptions = Subscription::whereRaw('DATE(created_at) BETWEEN ? AND ?', [$start, $end])
             ->select('package_price', 'created_at')
+            ->where('status', 'approved')
             ->orderBy('created_at')
             ->get();
         $subscription_formatted = [];

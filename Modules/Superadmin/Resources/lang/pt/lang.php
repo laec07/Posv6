@@ -255,4 +255,8 @@ return [
     'invalid_coupon' => 'Cupom inválido',
     'coupon_not_matched_with_package' => 'Código não aplicável neste plano',
     'coupon_not_matched_with_business' => 'Código não aplicável neste negócio',
+    'custom_link_help_text' => 'Se adicionar um link personalizado, quando um cliente selecionar este pacote na página do pacote, ele será direcionado para o link.',
+    'paid_via' => 'Pago Via',
+    'payment_transaction_id' => 'ID da transação de pagamento',
+    'remaining' => 'Restante',
 ];

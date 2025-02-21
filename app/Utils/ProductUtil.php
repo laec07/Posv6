@@ -1838,7 +1838,7 @@ class ProductUtil extends Util
             DB::raw("(SELECT SUM( COALESCE(pl.quantity - ($pl_query_string), 0) * purchase_price_inc_tax) FROM transactions 
                   JOIN purchase_lines AS pl ON transactions.id=pl.transaction_id
                   WHERE (transactions.status='received' OR transactions.type='purchase_return')  AND transactions.location_id=vld.location_id 
-                  AND (pl.variation_id=variations.id)) as stock_price1"), //Muestra el valor del stock segun compra, pero por transacciones incorrectas, muestra datos incorrectos
+                  AND (pl.variation_id=variations.id)) as stock_price"),
             DB::raw('SUM(vld.qty_available) as stock'),
             'variations.sub_sku as sku',
             'p.name as product',
@@ -1847,8 +1847,7 @@ class ProductUtil extends Util
             'p.id as product_id',
             'units.short_name as unit',
             'p.enable_stock as enable_stock',
-            'variations.dpp_inc_tax as unit_purchase_price',//laestrada
-            DB::raw("SUM(vld.qty_available)*variations.dpp_inc_tax as stock_price"), //laestrada  se corrije valor de setock según unidades actuales * precio compra
+            'variations.sell_price_inc_tax as unit_price',
             'pv.name as product_variation',
             'variations.name as variation_name',
             'l.name as location_name',

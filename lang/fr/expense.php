@@ -22,4 +22,6 @@
      'expense_update_success' => 'Dépenses mises à jour avec succès',
      'expense_delete_success' => 'Dépenses effacées avec succès',
      'expense_for' => 'Dépense pour',
+     'expense_for_help' => 'Choisissez l’utilisateur (email/nom d’utilisateur) auquel la dépense est liée (Optionnel)',
+    'import_expense' => 'Importer la dépense'
  ];

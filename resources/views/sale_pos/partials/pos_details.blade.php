@@ -188,7 +188,6 @@
     								<b>@lang('lang_v1.express_checkout_cash')</b>
     							</div>
 								</button>
-								<label><input type="checkbox" name="ffel" id="ffel" value="1"  checked>Factura FEL</label> <!-- Habilitar y deshabilitar facturacion Fel-->
 							</div>
 
 							<div class="div-overlay pos-processing"></div>

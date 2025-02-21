@@ -44,4 +44,7 @@ return [
     'price' => 'Harga',
     'activate' => 'Aktif',
     'deactivate' => 'Non Aktif',
+    'print_detailed' => 'Cetak Rinci',
+    'print_mini' => 'Cetak Mini',
+    'opening' => 'Pembukaan',
 ];

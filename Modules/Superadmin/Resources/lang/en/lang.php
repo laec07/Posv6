@@ -35,7 +35,6 @@ return [
     'start_date' => 'Start Date',
     'end_date' => 'End Date',
     'running' => 'Running',
-    'remaining' => 'Remaining :days day(s)',
     'pay_and_subscribe' => 'Pay & Subscribe',
     'pay_via' => 'Pay via :method',
     'subscription_expired' => 'Subscription Expired!',
@@ -64,7 +63,6 @@ return [
     'business_name' => 'Business Name',
     'package_name' => 'Package Name ',
     'trial_end_date' => 'Trial End Date',
-    'paid_via' => 'Paid Via',
     'payment_transaction_id' => 'Transaction Id',
     'view_subscription' => 'View Subscription',
     'action' => 'Action',
@@ -263,5 +261,8 @@ return [
     'fatoorah_step_3' => '3. Choose the "API Key" button from the drop-down menu.',
     'fatoorah_step_4' => '4. Press on the "Create" button to generate a new API token key.',
     'fatoorah_step_5' => '5. Click on the "Copy" icon on the lower right corner of the textbox to copy and use it in your integration.',
-
+    'custom_link_help_text' => "if you add custom link, when a customer selects this package in package page, it'll go to the link.",
+    'paid_via' => 'Paid Via',
+    'payment_transaction_id' => 'Payment Transaction ID',
+    'remaining' => 'Remaining',
 ];

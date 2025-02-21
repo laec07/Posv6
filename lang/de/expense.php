@@ -22,4 +22,6 @@
      'expense_update_success' => 'Aufwand erfolgreich aktualisiert',
      'expense_delete_success' => 'Aufwand erfolgreich gelöscht',
      'expense_for' => 'Aufwand für',
+     'expense_for_help' => 'Wählen Sie den Benutzer (E-Mail/Benutzername) aus, dem die Ausgabe zugeordnet ist (Optional)',
+    'import_expense' => 'Ausgabe importieren'
  ];

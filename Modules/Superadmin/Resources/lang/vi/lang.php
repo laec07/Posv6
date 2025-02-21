@@ -254,5 +254,9 @@ return [
     'applied_on_business_help_text' => 'Nếu không chọn doanh nghiệp, có thể áp dụng cho tất cả',
     'invalid_coupon' => 'Mã giảm giá không hợp lệ',
     'coupon_not_matched_with_package' => 'Mã không áp dụng cho gói này',
-    'coupon_not_matched_with_business' => 'Mã không áp dụng cho doanh nghiệp này'
+    'coupon_not_matched_with_business' => 'Mã không áp dụng cho doanh nghiệp này',
+    'custom_link_help_text' => 'Nếu bạn thêm liên kết tùy chỉnh, khi khách hàng chọn gói này trên trang gói, nó sẽ chuyển đến liên kết.',
+    'paid_via' => 'Đã thanh toán qua',
+    'payment_transaction_id' => 'ID giao dịch thanh toán',
+    'remaining' => 'Còn lại',
 ];

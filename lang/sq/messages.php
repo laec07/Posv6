@@ -30,4 +30,7 @@
      'purchase_sell_mismatch_exception' => 'ERROR: NUK LEJOHET: Mospërputhja mes shitjes dhe sasisë së blerjes Produkti: :product',
      'purchase_stock_adjustment_mismatch_exception' => 'ERROR: NUK LEJOHET: Mospërputhja ndërmjet rregullimit të aksioneve dhe sasisë së blerjes Produkti: :product',
      'transaction_edit_not_allowed' => 'Redaktimi i transaksionit nuk lejohet pas :days ditësh.',
+     'print_detailed' => 'Printo të Detajuar',
+    'print_mini' => 'Printo Mini',
+    'opening' => 'Hapja',
  ];

@@ -484,7 +484,7 @@ class AdminSidebarMenu
                         $sub->url(
                             action([\App\Http\Controllers\ExpenseController::class, 'index']),
                             __('lang_v1.list_expenses'),
-                            ['icon' => '', 'active' => request()->segment(1) == 'expenses' && request()->segment(2) == null]
+                            ['icon' => '', 'active' => request()->segment(1) == 'expenses' || request()->segment(1) == 'import-expense' && request()->segment(2) == null]
                         );
 
                         if (auth()->user()->can('expense.add')) {
@@ -638,11 +638,6 @@ class AdminSidebarMenu
                                     ['icon' => '', 'active' => request()->segment(2) == 'stock-adjustment-report']
                                 );
                             }
-                         /*   $sub->url( //LESTRADA
-                                action([\App\Http\Controllers\ReportController::class, 'activityLog']),
-                                __('Reporte Stock historico'),
-                                ['icon' => 'fa fas fa-user-secret', 'active' => request()->segment(2) == 'activity-log']
-                            );*/
                         }
 
                         if (auth()->user()->can('trending_product_report.view')) {
@@ -791,7 +786,7 @@ class AdminSidebarMenu
 
             //Service Staff menu
             if (in_array('service_staff', $enabled_modules)) {
-                $menu->url(action([\App\Http\Controllers\Restaurant\OrderController::class, 'index']), __('restaurant.orders'), ['icon' => 'fa fas fa-list-alt', 'active' => request()->segment(1) == 'modules' && request()->segment(2) == 'orders'])->order(75);
+                $menu->url(action([\App\Http\Controllers\Restaurant\OrderController::class, 'index']), __('restaurant.orders'), ['icon' => '<svg  xmlns="http://www.w3.org/2000/svg"  width="24"  height="18"  viewBox="0 0 24 24"  fill="none"  stroke="currentColor"  stroke-width="2"  stroke-linecap="round"  stroke-linejoin="round"  class="icon icon-tabler icons-tabler-outline icon-tabler-baseline-density-medium"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 20h16" /><path d="M4 12h16" /><path d="M4 4h16" /></svg>', 'active' => request()->segment(1) == 'modules' && request()->segment(2) == 'orders'])->order(75);
             }
 
             //Notification template menu

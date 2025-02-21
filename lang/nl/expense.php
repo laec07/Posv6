@@ -22,4 +22,6 @@
      'expense_update_success' => 'Uitgave succesvol bijgewerkt',
      'expense_delete_success' => 'Kosten met succes verwijderd',
      'expense_for' => 'Kosten voor',
+     'expense_for_help' => 'Kies de gebruiker (e-mail/gebruikersnaam) waarop de uitgave betrekking heeft (Optioneel)',
+    'import_expense' => 'Uitgave importeren'
  ];

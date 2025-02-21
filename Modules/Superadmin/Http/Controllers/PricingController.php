@@ -6,6 +6,7 @@ use App\Utils\ModuleUtil;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Controller;
 use Modules\Superadmin\Entities\Package;
+use Illuminate\Http\Request;
 
 class PricingController extends Controller
 {
@@ -44,5 +45,28 @@ class PricingController extends Controller
 
         return view('superadmin::pricing.index')
             ->with(compact('packages', 'permission_formatted'));
+    }
+
+    public function package_duration_update(Request $request)
+    {
+        $interval = $request->input('interval');
+
+        $packages = Package::listPackages(true, $interval);
+
+        //Get all module permissions and convert them into name => label
+        $permissions = $this->moduleUtil->getModuleData('superadmin_package');
+        $permission_formatted = [];
+        foreach ($permissions as $permission) {
+            foreach ($permission as $details) {
+                $permission_formatted[$details['name']] = $details['label'];
+            }
+        }
+
+        $action_type = 'register';
+
+        return view('superadmin::subscription.partials.packages')
+        ->with(compact('packages', 'permission_formatted', 'action_type'));
+
+        
     }
 }

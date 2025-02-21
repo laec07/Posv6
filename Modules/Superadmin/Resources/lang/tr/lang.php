@@ -255,4 +255,8 @@ return [
     'invalid_coupon' => 'Geçersiz Kupon',
     'coupon_not_matched_with_package' => 'Bu pakette kod uygulanamaz',
     'coupon_not_matched_with_business' => 'Bu işletmede kod uygulanamaz',
+    'custom_link_help_text' => 'Özel bir bağlantı eklerseniz, bir müşteri paket sayfasında bu paketi seçtiğinde, bağlantıya gidecektir.',
+    'paid_via' => 'Ödeme Yöntemi',
+    'payment_transaction_id' => 'Ödeme İşlem Numarası',
+    'remaining' => 'Kalan',
 ];

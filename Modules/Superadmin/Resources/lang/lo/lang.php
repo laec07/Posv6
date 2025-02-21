@@ -255,5 +255,8 @@ return [
     'invalid_coupon' => 'ລະຫັດບໍ່ຖືກຕ້ອງ',
     'coupon_not_matched_with_package' => 'ລະຫັດບໍ່ໄດ້ສະຫຼຸບໃນແຜນນີ້',
     'coupon_not_matched_with_business' => 'ລະຫັດບໍ່ໄດ້ສະຫຼຸບໃນທຸລະກຳນີ້',
-
+    'custom_link_help_text' => 'ຖ້າທ່ານເພີ່ມລິ້ງສະເພາະ, ເມື່ອລູກຄ້າເລືອກແພັກເກັດນີ້ໃນໜ້າແພັກເກັດ, ມັນຈະໄປທີ່ລິ້ງ.',
+    'paid_via' => 'ຈ່າຍຜ່ານ',
+    'payment_transaction_id' => 'ຫົວໜ່ວຍທົດສອບການຊຳລະ',
+    'remaining' => 'ຫົວໜ່ວຍຫົກສັກ',
 ];

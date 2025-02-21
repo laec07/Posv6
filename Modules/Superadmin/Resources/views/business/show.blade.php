@@ -17,7 +17,7 @@
     <!-- Main content -->
     <section class="content">
         <div
-            class=" tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            class=" tw-transition-all lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
                 <div class="tw-flex tw-gap-2.5">
                     <strong><i class="fa fa-briefcase margin-r-5"></i>
@@ -136,7 +136,7 @@
         </div>
 
         <div
-            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
                 <div class="tw-flex tw-gap-2.5">
                     <strong><i class="fa fa-map-marker margin-r-5"></i>
@@ -148,13 +148,13 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Location ID</th>
-                                        <th>Landmark</th>
-                                        <th>city</th>
-                                        <th>Zip Code</th>
-                                        <th>State</th>
-                                        <th>Country</th>
+                                        <th>@lang('lang_v1.name')</th>
+                                        <th>@lang('lang_v1.location_id')</th> 
+                                        <th>@lang('business.landmark')</th>
+                                        <th>@lang('business.city')</th>
+                                        <th>@lang('business.zip_code')</th>
+                                        <th>@lang('business.state')</th>
+                                        <th>@lang('business.country')</th>
                                     </tr>
                                 </thead>
 
@@ -180,7 +180,7 @@
         </div>
 
         <div
-            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
                 <div class="tw-flex tw-gap-2.5">
                     <strong><i class="fa fa-refresh margin-r-5"></i>
@@ -193,14 +193,14 @@
                             <table class="table table-bordered table-hover">
                                 <thead>
                                     <tr>
-                                        <th>Package Name</th>
-                                        <th>Start Date</th>
-                                        <th>Trail End Date</th>
-                                        <th>End Date</th>
-                                        <th>Paid Via</th>
-                                        <th>Payment Transaction ID</th>
-                                        <th>Created At</th>
-                                        <th>Created By</th>
+                                        <th>@lang('superadmin::lang.package_name')</th>
+                                        <th>@lang('superadmin::lang.start_date')</th>
+                                        <th>@lang('superadmin::lang.trial_end_date')</th>
+                                        <th>@lang('superadmin::lang.end_date')</th>
+                                        <th>@lang('superadmin::lang.paid_via')</th>
+                                        <th>@lang('superadmin::lang.payment_transaction_id')</th>
+                                        <th>@lang('lang_v1.created_at')</th>
+                                        <th>@lang('business.created_by')</th>
                                     </tr>
                                 </thead>
 
@@ -243,7 +243,7 @@
         </div>
 
         <div
-            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md hover:tw-translate-y-0.5 tw-ring-gray-200">
+            class="tw-mt-5 tw-transition-all  lg:tw-col-span-1 tw-duration-200 tw-bg-white tw-shadow-sm tw-rounded-xl tw-ring-1 hover:tw-shadow-md  tw-ring-gray-200">
             <div class="tw-p-4 sm:tw-p-5">
                 <div class="tw-flex tw-gap-2.5">
                     <strong>{{ __('user.all_users') }}</strong>
@@ -279,6 +279,7 @@
             var users_table = $('#users_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: '/superadmin/users/' + "{{ $business->id }}",
                 columnDefs: [{
                     "targets": [4],

@@ -32,5 +32,6 @@ return [
     'expense_update_success' => 'Biaya berhasil diperbarui',
     'expense_delete_success' => 'Biaya berhasil dihapus',
     'expense_for' => 'Biaya untuk',
-
+    'expense_for_help' => 'Pilih pengguna (email/nama pengguna) yang terkait dengan pengeluaran (Opsional)',
+    'import_expense' => 'Impor pengeluaran'
 ];

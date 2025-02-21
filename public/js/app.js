@@ -2025,25 +2025,20 @@ $(document).ready(function() {
         placeholder: LANG.search,
     });
 
-    $('#search_settings').change(function(){
-        // Get label position and add active class to the tab
+    $('#search_settings').change( function(){
+        //Get label position and add active class to the tab
         var label_index = $(this).val();
         var label = label_objects[label_index];
         $('.pos-tab-content.active').removeClass('active');
         var tab_content = label.closest('.pos-tab-content');
         tab_content.addClass('active');
-        var tab_index = $('.pos-tab-content').index(tab_content);
+        tab_index = $('.pos-tab-content').index(tab_content);
         $('.list-group-item.active').removeClass('active');
         $('.list-group-item').eq(tab_index).addClass('active');
-            
-        // Scroll the container to the target element
-        var container = $('#scrollable-container');
-        var targetOffset = label.offset().top + container.scrollTop() - container.offset().top;
-        
-        container.animate({
-            scrollTop: targetOffset - 100 // Adjust offset as needed
+        //Highlight the label for three seconds
+        $([document.documentElement, document.body]).animate({
+            scrollTop: label.offset().top - 100
         }, 500);
-        
         label.css('background-color', 'yellow');
         setTimeout(function(){ 
             label.css('background-color', ''); 

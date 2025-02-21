@@ -224,8 +224,8 @@ $(document).ready(function() {
                     }
 
                     var is_draft=false;
-                    if($('input#status') && ($('input#status').val()=='quotation' || 
-                    $('input#status').val()=='draft')) {
+                    if($('#status') && ($('#status').val()=='quotation' || 
+                    $('#status').val()=='draft')) {
                         var is_draft=true;
                     }
 
@@ -251,8 +251,9 @@ $(document).ready(function() {
                     for_so = true;
                 }
                 var is_draft=false;
-                if($('input#status') && ($('input#status').val()=='quotation' || 
-                $('input#status').val()=='draft')) {
+                
+                if($('#status') && ($('#status').val()=='quotation' || 
+                $('#status').val()=='draft')) {
                     var is_draft=true;
                 }
 
@@ -300,9 +301,10 @@ $(document).ready(function() {
 
     //Update line total and check for quantity not greater than max quantity
     $('table#pos_table tbody').on('change', 'input.pos_quantity', function() {
-        if (sell_form_validator) {
-            sell_form.valid();
-        }
+        // comment line becouse it validate form at increment and decrement item
+        // if (sell_form_validator) {
+        //     sell_form.valid();
+        // }
         if (pos_form_validator) {
             pos_form_validator.element($(this));
         }
@@ -839,7 +841,6 @@ $(document).ready(function() {
                             //Check if enabled or not
                             if (result.receipt.is_enabled) {
                                 pos_print(result.receipt);
-                                fel_print(result.felauth);
                             }
                         } else {
                             toastr.error(result.msg);
@@ -1675,9 +1676,18 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
         }
 
         var is_draft=false;
-        if($('input#status') && ($('input#status').val()=='quotation' || 
-        $('input#status').val()=='draft')) {
+        if($('#status') && ($('#status').val()=='quotation' || 
+        $('#status').val()=='draft')) {
             is_draft=true;
+        }
+
+        var is_serial_no = false;
+
+        if (
+            $('input[name="is_serial_no"]').length > 0 &&
+            $('input[name="is_serial_no"]').val() == 1
+        ) {
+            is_serial_no = true;
         }
         
         $.ajax({
@@ -1688,6 +1698,7 @@ function pos_product_row(variation_id = null, purchase_line_id = null, weighing_
                 product_row: product_row,
                 customer_id: customer_id,
                 is_direct_sell: is_direct_sell,
+                is_serial_no: is_serial_no,
                 price_group: price_group,
                 purchase_line_id: purchase_line_id,
                 weighing_scale_barcode: weighing_scale_barcode,
@@ -1802,6 +1813,13 @@ function pos_total_row() {
     //$('span.unit_price_total').html(unit_price_total);
     $('span.price_total').html(__currency_trans_from_en(price_total, false));
     calculate_billing_details(price_total);
+
+    if (
+        $('input[name="is_serial_no"]').length > 0 &&
+        $('input[name="is_serial_no"]').val() == 1
+    ) {
+        update_serial_no();
+    }
 }
 
 function get_subtotal() {
@@ -3178,12 +3196,12 @@ $(document).on('change', '#res_waiter_id', function(e){
     }
 })
 
-function fel_print(felauth) {
-	urlExterna = 'https://report.feel.com.gt/ingfacereport/ingfacereport_documento?uuid='+felauth;
-    // Impresión de la factura utilizando el tipo de impresora "browser"
-    // y la facturación electrónica de LAESTRADA FEL 
-	console.log(urlExterna);
-    setTimeout(function(){
-        window.open(urlExterna);
-    }, 1000);
+// update serial number of product item
+function update_serial_no(){
+    $('.product_row').each(function (index) {
+        // Add the serial number to the first <td> of each row (index + 1 to start from 1)
+        if ($(this).find('td:first').hasClass('serial_no')) {
+            $(this).find('td:first').text(index + 1);
+        }
+    });
 }

@@ -258,4 +258,8 @@ return [
     'invalid_coupon' => 'كوبون غير صالح',
     'coupon_not_matched_with_package' => 'الرمز غير قابل للتطبيق في هذه الخطة',
     'coupon_not_matched_with_business' => 'الرمز غير قابل للتطبيق في هذا العمل',
+    'custom_link_help_text' => 'إذا أضفت رابطًا مخصصًا، عندما يختار العميل هذه الحزمة في صفحة الحزمة، سيذهب إلى الرابط.',
+    'paid_via' => 'مدفوع عبر',
+    'payment_transaction_id' => 'معرف معاملة الدفع',
+    'remaining' => 'متبقي',
 ];

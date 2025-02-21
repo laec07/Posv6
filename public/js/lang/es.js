@@ -19,7 +19,6 @@ LANG = {
 "this_month": "Este mes",
 "last_month": "El mes pasado",
 "this_financial_year": "Ejercicio actual",
-"year_combined": "Año anterior - actual",
 "clear": "Claro",
 "no_products_added": "No se agregaron productos, agregue algunos productos primero",
 "some_error_in_input_field": "Invalid inputs, Check & try again !!",

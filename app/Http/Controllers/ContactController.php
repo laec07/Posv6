@@ -111,8 +111,8 @@ class ContactController extends Controller
         $contact = $this->contactUtil->getContactQuery($business_id, 'supplier');
 
         if (request()->has('has_purchase_due')) {
-            $contact->havingRaw('(total_purchase - purchase_paid) > 0');
-        }
+			$contact->havingRaw('(IFNULL(total_purchase, 0) - IFNULL(purchase_paid, 0) - IFNULL(total_ledger_discount, 0)) > 0');
+		}
 
         if (request()->has('has_purchase_return')) {
             $contact->havingRaw('total_purchase_return > 0');
@@ -365,7 +365,7 @@ class ContactController extends Controller
             ->addColumn('address', '{{implode(", ", array_filter([$address_line_1, $address_line_2, $city, $state, $country, $zip_code]))}}')
             ->addColumn(
                 'due',
-                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount)</span>'
+                '<span class="contact_due" data-orig-value="{{$total_invoice - $invoice_received - $total_ledger_discount - $total_sell_return}}" data-highlight=true>@format_currency($total_invoice - $invoice_received - $total_ledger_discount -  $total_sell_return)</span>'
             )
             ->addColumn(
                 'return_due',

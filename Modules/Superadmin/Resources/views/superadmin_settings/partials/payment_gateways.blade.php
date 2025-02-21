@@ -149,7 +149,7 @@
         </div>
         <div class="col-xs-12 mt-0">
             <p class="help-block mt-0">
-                <a href="https://support.flutterwave.com/en/articles/3632719-accepted-currencies" target="_blank">
+                <a href="https://flutterwave.com/tz/support/general/what-are-the-currencies-accepted-on-flutterwave" target="_blank">
                     @lang('superadmin::lang.flutterwave_help_text')
                 </a>
             </p>

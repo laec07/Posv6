@@ -256,5 +256,9 @@ return [
     'applied_on_business_help_text' => 'यदि कोई व्यापार चयनित नहीं हुआ है तो इसे सभी पर लागू किया जा सकता है',
     'invalid_coupon' => 'अमान्य कूपन',
     'coupon_not_matched_with_package' => 'इस योजना में इस कोड का उपयोग नहीं किया जा सकता',
-    'coupon_not_matched_with_business' => 'इस व्यापार में इस कोड का उपयोग नहीं किया जा सकता'
+    'coupon_not_matched_with_business' => 'इस व्यापार में इस कोड का उपयोग नहीं किया जा सकता',
+    'custom_link_help_text' => 'यदि आप एक कस्टम लिंक जोड़ते हैं, तो जब कोई ग्राहक पैकेज पृष्ठ पर इस पैकेज का चयन करता है, तो यह लिंक पर जाएगा।',
+    'paid_via' => 'भुगतान माध्यम',
+    'payment_transaction_id' => 'भुगतान लेन-देन आईडी',
+    'remaining' => 'बचा हुआ',
 ];

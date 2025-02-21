@@ -255,4 +255,8 @@ return [
     'invalid_coupon' => 'Cupon invalid',
     'coupon_not_matched_with_package' => 'Codul nu este aplicabil în acest plan',
     'coupon_not_matched_with_business' => 'Codul nu este aplicabil în această afacere',
+    'custom_link_help_text' => 'Dacă adăugați un link personalizat, când un client selectează acest pachet pe pagina pachetului, va merge la link.',
+    'paid_via' => 'Plătit prin',
+    'payment_transaction_id' => 'ID-ul tranzacției de plată',
+    'remaining' => 'Rămase',
 ];

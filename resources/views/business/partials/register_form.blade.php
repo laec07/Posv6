@@ -328,12 +328,12 @@
 <div class="clearfix"></div>
 <div class="col-md-6">
     @if(!empty($system_settings['superadmin_enable_register_tc']))
-        <div class="form-group">
+        <div>
             <label>
-                {!! Form::checkbox('accept_tc', 0, false, ['required', 'class' => 'input-icheck']); !!}
-                <u><a class="terms_condition cursor-pointer" data-toggle="modal" data-target="#tc_modal">
+                {!! Form::checkbox('accept_tc', 0, false, ['required', 'class' => 'input-check-box']); !!}
+                <a class="terms_condition cursor-pointer" data-toggle="modal" data-target="#tc_modal">
                     @lang('lang_v1.accept_terms_and_conditions') <i></i>
-                </a></u>
+                </a>
             </label>
         </div>
         @include('business.partials.terms_conditions')

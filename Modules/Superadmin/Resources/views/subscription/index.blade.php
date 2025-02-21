@@ -122,9 +122,7 @@
                             <div class="box-body text-center">
                                 @lang('superadmin::lang.start_date') : {{ @format_date($active->start_date) }} <br />
                                 @lang('superadmin::lang.end_date') : {{ @format_date($active->end_date) }} <br />
-
-                                @lang('superadmin::lang.remaining', ['days' => \Carbon::today()->diffInDays($active->end_date)])
-
+                                @lang('superadmin::lang.remaining') : {{\Carbon::today()->diffInDays($active->end_date)}} @lang('lang_v1.days')
                             </div>
                         </div>
                     </div>
@@ -284,6 +282,7 @@
             $('#all_subscriptions_table').DataTable({
                 processing: true,
                 serverSide: true,
+                fixedHeader:false,
                 ajax: '{{ action([\Modules\Superadmin\Http\Controllers\SubscriptionController::class, 'allSubscriptions']) }}',
                 columns: [{
                         data: 'package_name',

@@ -257,4 +257,8 @@ return [
     'invalid_coupon' => 'Coupon invalide',
     'coupon_not_matched_with_package' => 'Code non applicable dans ce plan',
     'coupon_not_matched_with_business' => 'Code non applicable dans cette entreprise',
+    'custom_link_help_text' => 'Si agrega un enlace personalizado, cuando un cliente seleccione este paquete en la página del paquete, irá al enlace.',
+    'paid_via' => 'Pagado a través de',
+    'payment_transaction_id' => 'ID de transacción de pago',
+    'remaining' => 'Restante',
 ];

@@ -1,4 +1,4 @@
-<div class="col-md-4 tw-mb-5 {{ $package->interval }} tw-relative">
+<div class="col-md-4 tw-mb-5 {{ $package->interval }} tw-relative price_card">
     <div
         class="tw-flex tw-flex-col tw-gap-6 tw-p-6 tw-shadow bg-white tw-rounded-2xl tw-shadow-lg tw-transition-all tw-duration-700 hover:tw-scale-110 tw-cursor-pointer">
 
@@ -20,7 +20,7 @@
                         : __('lang_v1.' . $package->interval);
                 @endphp
                 @if ($package->price != 0)
-                    <span class="display_currency" data-currency_symbol="true">
+                    <span class="display_currency" data-use_page_currency="true" data-currency_symbol="true">
                         {{ $package->price }}
                     </span>
 

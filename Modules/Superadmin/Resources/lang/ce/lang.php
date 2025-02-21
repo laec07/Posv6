@@ -257,4 +257,8 @@ return [
     'invalid_coupon' => '无效优惠券',
     'coupon_not_matched_with_package' => '代码不适用于此计划',
     'coupon_not_matched_with_business' => '代码不适用于此商业',
+    'custom_link_help_text' => '如果添加自定义链接，当客户在套餐页面选择此套餐时，将转到该链接。',
+    'paid_via' => '通过支付',
+    'payment_transaction_id' => '支付交易ID',
+    'remaining' => '剩余',
 ];

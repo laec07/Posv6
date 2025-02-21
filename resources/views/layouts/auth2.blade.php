@@ -35,19 +35,30 @@
         <div class="row eq-height-row">
             <div class="col-md-12 col-sm-12 col-xs-12 right-col tw-pt-20 tw-pb-10 tw-px-5">
                 <div class="row">
-                    <div
+                    {{-- <div
                         class="lg:tw-w-16 md:tw-h-16 tw-w-12 tw-h-12 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-overflow-hidden tw-bg-white tw-rounded-full tw-p-0.5 tw-mb-4">
                         <img src="{{ asset('img/logo-small.png')}}" alt="lock" class="tw-rounded-full tw-object-fill" />
-                    </div>
+                    </div> --}}
 
                     <div class="tw-absolute tw-top-2 md:tw-top-5 tw-left-4 md:tw-left-8 tw-flex tw-items-center tw-gap-4"
                         style="text-align: left">
-                        @include('layouts.partials.language_btn')
-
-                        @if(Route::has('repair-status'))
+                        <a href="{{ url('/') }}">
+                            <div
+                                class="lg:tw-w-16 md:tw-h-16 tw-w-12 tw-h-12 tw-flex tw-items-center tw-justify-center tw-mx-auto tw-overflow-hidden tw-p-0.5 tw-mb-4">
+                                <img src="{{ asset('img/logo-small.png')}}" alt="lock" class="tw-object-fill" />
+                            </div>
+                        </a>
+                        @if(config('constants.SHOW_REPAIR_STATUS_LOGIN_SCREEN') && Route::has('repair-status'))
                             <a class="tw-text-white tw-font-medium tw-text-sm md:tw-text-base hover:tw-text-white"
                                 href="{{ action([\Modules\Repair\Http\Controllers\CustomerRepairStatusController::class, 'index']) }}">
                                 @lang('repair::lang.repair_status')
+                            </a>
+                        @endif
+                        
+                        @if(Route::has('member_scanner'))
+                            <a class="tw-text-white tw-font-medium tw-text-sm md:tw-text-base hover:tw-text-white"
+                                href="{{ action([\Modules\Gym\Http\Controllers\MemberController::class, 'member_scanner']) }}">
+                                @lang('gym::lang.gym_member_profile')
                             </a>
                         @endif
                     </div>
@@ -78,6 +89,7 @@
                             <a class="tw-text-white tw-font-medium tw-text-sm md:tw-text-base hover:tw-text-white"
                                 href="{{ action([\App\Http\Controllers\Auth\LoginController::class, 'login'])}}@if(!empty(request()->lang)){{'?lang='.request()->lang}}@endif">{{ __('business.sign_in') }}</a>
                         @endif
+                        @include('layouts.partials.language_btn')
                     </div>
                     <div class="col-md-10 col-xs-8" style="text-align: right;">
 
