@@ -54,7 +54,7 @@ class StockTransferController extends Controller
         if (! auth()->user()->can('purchase.view') && ! auth()->user()->can('purchase.create') && ! auth()->user()->can('view_own_purchase')) {
             abort(403, 'Unauthorized action.');
         }
-
+        $location_ids = auth()->user()->permitted_locations();
         $statuses = $this->stockTransferStatuses();
 
         if (request()->ajax()) {
@@ -78,7 +78,7 @@ class StockTransferController extends Controller
                     ->where('transactions.type', 'sell_transfer');
 
                     if (! auth()->user()->can('purchase.view') && auth()->user()->can('view_own_purchase')) {
-                        $stock_transfers->where('t2.created_by', request()->session()->get('user.id'));
+                        $stock_transfers->whereIn('t2.location_id', $location_ids);
                     }
 
                     $stock_transfers->select(
@@ -380,9 +380,9 @@ class StockTransferController extends Controller
      */
     public function show($id)
     {
-        if (! auth()->user()->can('purchase.view')) {
+       /* if (! auth()->user()->can('purchase.view')) {
             abort(403, 'Unauthorized action.');
-        }
+        }*/
 
         $business_id = request()->session()->get('user.business_id');
 
@@ -669,9 +669,9 @@ class StockTransferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! auth()->user()->can('purchase.create')) {
+       /* if (! auth()->user()->can('purchase.create')) {
             abort(403, 'Unauthorized action.');
-        }
+        }*/
 
         try {
             $business_id = $request->session()->get('user.business_id');
