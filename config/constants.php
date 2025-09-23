@@ -84,5 +84,5 @@ return [
     'enable_contact_assign' => true, //Used in add/edit contacts screen
     'show_payment_type_on_contact_pay' => false,
     'enable_gst_report_india' => env('ENABLE_GST_REPORT_INDIA', false),
-    'enable_secondary_unit' => false, //Experimental feature, may depreciate
+    'enable_secondary_unit' => true, //Experimental feature, may depreciate
 ];
