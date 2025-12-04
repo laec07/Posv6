@@ -268,8 +268,8 @@
 		@if(count($sub_units) > 0)
 			<br>
 			<select name="products[{{$row_count}}][sub_unit_id]" class="form-control input-sm sub_unit">
-                @foreach($sub_units as $key => $value)
-                    <option value="{{$key}}" data-multiplier="{{$value['multiplier']}}" data-unit_name="{{$value['name']}}" data-allow_decimal="{{$value['allow_decimal']}}" @if(!empty($product->sub_unit_id) && $product->sub_unit_id == $key) selected @endif>
+                @foreach($sub_units as $key => $value)																														<!-- LAESTRADA precio unidad -->              <!-- LAESTRADA precio unidad -->
+                    <option value="{{$key}}" data-multiplier="{{$value['multiplier']}}" data-unit_name="{{$value['name']}}" data-allow_decimal="{{$value['allow_decimal']}}" data-unit_name="{{ $value['name'] ?? '' }}" data-precio_unit="{{ isset($value['precio_unit']) ? $value['precio_unit'] : '' }}"@if(!empty($product->sub_unit_id) && $product->sub_unit_id == $key) selected @endif>
                         {{$value['name']}}
                     </option>
                 @endforeach
@@ -289,10 +289,18 @@
             required>
         @endif
 
-		<input type="hidden" class="base_unit_multiplier" name="products[{{$row_count}}][base_unit_multiplier]" value="{{$multiplier}}">
-
-		<input type="hidden" class="hidden_base_unit_sell_price" value="{{$product->default_sell_price / $multiplier}}">
+			<!-- LAESTRADA precio unidad -->
+		@php
+			// Calcular precio por unidad base (base unit price) de forma segura
+			$base_unit_price = $product->default_sell_price;
+			if (!empty($product->sub_unit_id) && isset($sub_units[$product->sub_unit_id]['precio_unit']) && !empty($sub_units[$product->sub_unit_id]['multiplier'])) {
+				$base_unit_price = $sub_units[$product->sub_unit_id]['precio_unit'] / $sub_units[$product->sub_unit_id]['multiplier'];
+			}
+		@endphp
 		
+		<input type="hidden" class="base_unit_multiplier" name="products[{{$row_count}}][base_unit_multiplier]" value="{{$multiplier}}">
+		<input type="hidden" class="hidden_base_unit_sell_price" value="{{ $base_unit_price }}"><!-- LAESTRADA precio unidad -->
+
 		{{-- Hidden fields for combo products --}}
 		@if($product->product_type == 'combo'&& !empty($product->combo_products))
 

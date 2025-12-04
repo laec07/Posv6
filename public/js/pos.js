@@ -1339,17 +1339,27 @@ $(document).ready(function() {
 
     $('table#pos_table').on('change', 'select.sub_unit', function() {
         var tr = $(this).closest('tr');
-        var base_unit_selling_price = tr.find('input.hidden_base_unit_sell_price').val();
 
-        var selected_option = $(this).find(':selected');
+        // base_unit_selling_price almacenado en el input (asegurarse es number) LAESTRADA precio unidad
+        var base_unit_selling_price = parseFloat(tr.find('input.hidden_base_unit_sell_price').val()) || 0;
+
+        var selected_option = $(this).find(':selected'); 
 
         var multiplier = parseFloat(selected_option.data('multiplier'));
 
         var allow_decimal = parseInt(selected_option.data('allow_decimal'));
+        var precio_unit = selected_option.data('precio_unit');
 
         tr.find('input.base_unit_multiplier').val(multiplier);
 
-        var unit_sp = base_unit_selling_price * multiplier;
+        // Si existe precio específico para la subunidad, usarlo; si no, calcular a partir del precio base  LAESTRADA precio unidad
+        var unit_sp = 0;
+        console.log('precio_unit:', precio_unit);
+        if (precio_unit !== undefined && precio_unit !== null && precio_unit !== '') {
+            unit_sp = parseFloat(precio_unit) || 0;
+        } else {
+            unit_sp = base_unit_selling_price * multiplier;
+        }
 
         var sp_element = tr.find('input.pos_unit_price');
         __write_number(sp_element, unit_sp);

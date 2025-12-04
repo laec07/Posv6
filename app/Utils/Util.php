@@ -11,6 +11,7 @@ use App\System;
 use App\Transaction;
 use App\TransactionSellLine;
 use App\Unit;
+use App\UnitVariation;
 use App\User;
 use App\VariationLocationDetails;
 use Config;
@@ -583,16 +584,22 @@ class Util
 
         //Add main unit as per given parameter or conditions.
         if (($return_main_unit_if_empty && count($unit->sub_units) == 0)) {
+            $price_unit = $this->getUnitVariationPrice($business_id, $product_id, $unit->id); //LAESTRADA precio unidad
+            
             $sub_units[$unit->id] = [
                 'name' => $unit->actual_name,
                 'multiplier' => 1,
                 'allow_decimal' => $unit->allow_decimal,
+                'precio_unit' => $price_unit, //LAESTRADA precio unidad
             ];
         } elseif (empty($related_sub_units) || in_array($unit->id, $related_sub_units)) {
+            $price_unit = $this->getUnitVariationPrice($business_id, $product_id, $unit->id); //LAESTRADA precio unidad
+            
             $sub_units[$unit->id] = [
                 'name' => $unit->actual_name,
                 'multiplier' => 1,
                 'allow_decimal' => $unit->allow_decimal,
+                'precio_unit' => $price_unit, //LAESTRADA precio unidad
             ];
         }
 
@@ -600,16 +607,42 @@ class Util
             foreach ($unit->sub_units as $sub_unit) {
                 //Check if subunit is related to the product or not.
                 if (empty($related_sub_units) || in_array($sub_unit->id, $related_sub_units)) {
+                    //Find price for the subunits.
+                    $price_unit = $this->getUnitVariationPrice($business_id, $product_id, $sub_unit->id); //LAESTRADA precio unidad
+                    
                     $sub_units[$sub_unit->id] = [
                         'name' => $sub_unit->actual_name,
                         'multiplier' => $sub_unit->base_unit_multiplier,
                         'allow_decimal' => $sub_unit->allow_decimal,
+                        'precio_unit' => $price_unit, //LAESTRADA precio unidad
                     ];
                 }
             }
         }
-
         return $sub_units;
+    }
+
+    /**
+     * Obtiene el precio de la unidad desde UnitVariation
+     * LAESTRADA precio unidad
+     * @param  int  $business_id
+     * @param  int  $product_id
+     * @param  int  $unit_id
+     * @return float|null
+     */
+    private function getUnitVariationPrice($business_id, $product_id, $unit_id)
+    {
+        if (empty($product_id)) {
+            return null;
+        }
+
+        $price = UnitVariation::where('business_id', $business_id)
+            ->where('products_id', $product_id)
+            ->where('units_id', $unit_id)
+            ->pluck('precio_unit')
+            ->first();
+
+        return $price ?? null;
     }
 
     public function getMultiplierOf2Units($base_unit_id, $unit_id)
