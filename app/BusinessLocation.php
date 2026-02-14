@@ -90,6 +90,14 @@ class BusinessLocation extends Model
         }
     }
 
+    public static function business_all($business_id)
+    {
+        $query = BusinessLocation::where('business_id', $business_id)->Active();
+        $result = $query->get();
+        $locations = $result->pluck('name', 'id');
+        return $locations;
+    }
+
     public function price_group()
     {
         return $this->belongsTo(\App\SellingPriceGroup::class, 'selling_price_group_id');

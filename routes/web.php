@@ -349,7 +349,9 @@ Route::middleware(['setData', 'auth', 'SetSessionData', 'language', 'timezone', 
     //Stock Transfer
     Route::get('stock-transfers/print/{id}', [StockTransferController::class, 'printInvoice']);
     Route::post('stock-transfers/update-status/{id}', [StockTransferController::class, 'updateStatus']);
+    Route::get('stock-transfers/create_soli', [StockTransferController::class, 'create_soli'])->name('stock-transfers.create_soli');
     Route::resource('stock-transfers', StockTransferController::class);
+    
 
     Route::get('/opening-stock/add/{product_id}', [OpeningStockController::class, 'add']);
     Route::post('/opening-stock/save', [OpeningStockController::class, 'save']);

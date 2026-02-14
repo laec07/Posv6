@@ -41,6 +41,7 @@ class StockTransferController extends Controller
             'in_transit' => 'bg-yellow',
             'completed' => 'bg-green',
             'pending' => 'bg-red',
+            'solicitado' => 'bg-blue',
         ];
     }
 
@@ -54,6 +55,8 @@ class StockTransferController extends Controller
         if (! auth()->user()->can('purchase.view') && ! auth()->user()->can('purchase.create') && ! auth()->user()->can('view_own_purchase')) {
             abort(403, 'Unauthorized action.');
         }
+
+        
 
         $statuses = $this->stockTransferStatuses();
 
@@ -76,6 +79,11 @@ class StockTransferController extends Controller
                     )
                     ->where('transactions.business_id', $business_id)
                     ->where('transactions.type', 'sell_transfer');
+
+                    $permitted_locations = auth()->user()->permitted_locations();//LAESTRADA - to restrict data using location permissions
+                    if ($permitted_locations != 'all') {
+                        $stock_transfers->whereIn('l2.id', $permitted_locations);
+                    }
 
                     if (! auth()->user()->can('purchase.view') && auth()->user()->can('view_own_purchase')) {
                         $stock_transfers->where('t2.created_by', request()->session()->get('user.id'));
@@ -106,14 +114,25 @@ class StockTransferController extends Controller
                         ->addDays($edit_days);
                     $today = today();
 
-                    if ($date->gte($today) && auth()->user()->can('purchase.delete')) {
+                    if ($row->status == 'solicitado' && $date->gte($today) ) {//LAESTRADA - allow to delete if status is solicitado and within edit days
                         $html .= '&nbsp;
                         <button type="button" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</button>';
+                    }else{    
+                        if ($date->gte($today) && auth()->user()->can('purchase.delete')) {
+                            $html .= '&nbsp;
+                            <button type="button" data-href="'.action([\App\Http\Controllers\StockTransferController::class, 'destroy'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-error delete_stock_transfer"><i class="fa fa-trash" aria-hidden="true"></i> '.__('messages.delete').'</button>';
+                        }
                     }
 
-                    if ($row->status != 'final' && auth()->user()->can('purchase.update')) {
+                    if ($row->status == 'solicitado') {// LAESTRADA - allow to edit if status is solicitado
+                        
                         $html .= '&nbsp;
                         <a href="'.action([\App\Http\Controllers\StockTransferController::class, 'edit'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a>';
+                    }else{
+                        if ($row->status != 'final' && auth()->user()->can('purchase.update')) {
+                            $html .= '&nbsp;
+                            <a href="'.action([\App\Http\Controllers\StockTransferController::class, 'edit'], [$row->id]).'" class="tw-dw-btn tw-dw-btn-xs tw-dw-btn-outline  tw-dw-btn-primary"><i class="fa fa-edit" aria-hidden="true"></i> '.__('messages.edit').'</a>';
+                        }
                     }
 
                     return $html;
@@ -178,9 +197,40 @@ class StockTransferController extends Controller
                 ->with(compact('business_locations', 'statuses'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create_soli()
+    {
+        if (! auth()->user()->can('purchase.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        $business_id = request()->session()->get('user.business_id');
+
+        //Check if subscribed or not
+        if (! $this->moduleUtil->isSubscribed($business_id)) {
+            return $this->moduleUtil->expiredResponse(action([\App\Http\Controllers\StockTransferController::class, 'index']));
+        }
+
+        $business_locations = BusinessLocation::forDropdown($business_id);
+        $business_locations_all = BusinessLocation::business_all($business_id);
+        
+
+        $statuses = [
+                    'solicitado' => __('Solicitado'),
+                ];
+
+        return view('stock_transfer.create_soli')
+                ->with(compact('business_locations', 'business_locations_all', 'statuses'));
+    }
+
     private function stockTransferStatuses()
     {
         return [
+            'solicitado' => __('solicitado'),
             'pending' => __('lang_v1.pending'),
             'in_transit' => __('lang_v1.in_transit'),
             'completed' => __('restaurant.completed'),
@@ -195,9 +245,13 @@ class StockTransferController extends Controller
      */
     public function store(Request $request)
     {
-        if (! auth()->user()->can('purchase.create')) {
-            abort(403, 'Unauthorized action.');
+        $status = $request->input('status');
+        if ($status != 'solicitado') {
+            if (! auth()->user()->can('purchase.create')) {
+                abort(403, 'Unauthorized action.');
+            }
         }
+        
 
         try {
             $business_id = $request->session()->get('user.business_id');
@@ -383,7 +437,6 @@ class StockTransferController extends Controller
         if (! auth()->user()->can('purchase.view')) {
             abort(403, 'Unauthorized action.');
         }
-
         $business_id = request()->session()->get('user.business_id');
 
         $sell_transfer = Transaction::where('business_id', $business_id)
@@ -443,7 +496,7 @@ class StockTransferController extends Controller
      */
     public function destroy($id)
     {
-        if (! auth()->user()->can('purchase.delete')) {
+        if (! auth()->user()->can('purchase.view')) {
             abort(403, 'Unauthorized action.');
         }
         try {
@@ -615,6 +668,7 @@ class StockTransferController extends Controller
         $business_id = request()->session()->get('user.business_id');
 
         $business_locations = BusinessLocation::forDropdown($business_id);
+        $business_locations_all = BusinessLocation::business_all($business_id);
 
         $statuses = $this->stockTransferStatuses();
 
@@ -657,7 +711,7 @@ class StockTransferController extends Controller
         }
 
         return view('stock_transfer.edit')
-                ->with(compact('sell_transfer', 'purchase_transfer', 'business_locations', 'statuses', 'products'));
+                ->with(compact('sell_transfer', 'purchase_transfer', 'business_locations', 'statuses', 'products', 'business_locations_all'));
     }
 
     /**
@@ -669,8 +723,12 @@ class StockTransferController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (! auth()->user()->can('purchase.create')) {
-            abort(403, 'Unauthorized action.');
+
+         $status = $request->input('status');
+        if ($status != 'solicitado') {
+            if (! auth()->user()->can('purchase.create')) {
+                abort(403, 'Unauthorized action.');
+            }
         }
 
         try {

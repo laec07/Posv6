@@ -34,14 +34,19 @@
 				<div class="col-sm-4">
 					<div class="form-group">
 						{!! Form::label('status', __('sale.status').':*') !!} @show_tooltip(__('lang_v1.completed_status_help'))
-						{!! Form::select('status', $statuses, $sell_transfer->status, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'required', 'id' => 'status']); !!}
+						@if($sell_transfer->status == 'solicitado')
+							{!! Form::select('status', $statuses, $sell_transfer->status, ['class' => 'form-control select2', 'id' => 'status', 'disabled' => true]) !!}
+							<input type="hidden" name="status" value="solicitado">
+						@else
+							{!! Form::select('status', $statuses, $sell_transfer->status, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'required', 'id' => 'status']) !!}
+						@endif
 					</div>
 				</div>
 				<div class="clearfix"></div>
 				<div class="col-sm-6">
 					<div class="form-group">
 						{!! Form::label('location_id', __('lang_v1.location_from').':*') !!}
-						{!! Form::select('location_id', $business_locations, $sell_transfer->location_id, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'id' => 'location_id', 'disabled']); !!}
+						{!! Form::select('location_id', $business_locations_all, $sell_transfer->location_id, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'id' => 'location_id', 'disabled']); !!}
 					</div>
 				</div>
 				<div class="col-sm-6">
