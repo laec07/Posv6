@@ -134,6 +134,7 @@ $(document).ready(function() {
     });
 
     stock_transfer_table = $('#stock_transfer_table').DataTable({
+        
         processing: true,
         serverSide: true,
         fixedHeader:false,
