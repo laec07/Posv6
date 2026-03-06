@@ -557,6 +557,64 @@ class ProductUtil extends Util
     }
 
     /**
+     * Trae detalle del producto para etiquetas
+     * impresoón de etiquetas.
+     * LAESTRADA
+     * @param  int  $variation_id
+     * @return array
+     */
+    public function getDetailsFromVariationLabels($variation_id, $business_id)
+    {
+        //Solo para obtener media de la variación
+        $variation = Variation::with('media')->findOrFail($variation_id);
+
+        $product = Variation::join('products AS p', 'variations.product_id', '=', 'p.id')
+            ->join('product_variations AS pv', 'variations.product_variation_id', '=', 'pv.id')
+            ->leftJoin('units', 'p.unit_id', '=', 'units.id')
+            ->leftJoin('units as u', 'p.secondary_unit_id', '=', 'u.id')
+            ->leftJoin('brands', function ($join) {
+                $join->on('p.brand_id', '=', 'brands.id')
+                    ->whereNull('brands.deleted_at');
+            })
+            ->where('p.business_id', $business_id)
+            ->where('variations.id', $variation_id)
+            ->select(
+                DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, 
+                        ' (', pv.name, ':', variations.name, ')'), p.name) AS product_name"),
+                'p.id as product_id',
+                'p.brand_id',
+                'p.category_id',
+                'p.tax as tax_id',
+                'p.type as product_type',
+                'p.name as product_actual_name',
+                'p.image as product_image',
+                'p.barcode_type',
+
+                'pv.name as product_variation_name',
+                'pv.is_dummy as is_dummy',
+
+                'variations.id as variation_id',
+                'variations.name as variation_name',
+                'variations.sub_sku',
+                'variations.default_sell_price',
+                'variations.sell_price_inc_tax',
+
+                'units.short_name as unit',
+                'units.id as unit_id',
+                'units.allow_decimal as unit_allow_decimal',
+                'u.short_name as second_unit',
+
+                'brands.name as brand'
+            )
+            ->firstOrFail();
+
+        //Agregar media como en la función original
+        $product->media = $variation->media;
+
+        return $product;
+    }
+
+    /**
      * Calculates the quantity of combo products based on
      * the quantity of variation items used.
      *

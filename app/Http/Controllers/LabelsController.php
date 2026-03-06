@@ -125,8 +125,8 @@ class LabelsController extends Controller
             $product_details_page_wise = [];
             $total_qty = 0;
             foreach ($products as $value) {
-                $details = $this->productUtil->getDetailsFromVariation($value['variation_id'], $business_id, null, false);
-
+                $details = $this->productUtil->getDetailsFromVariationLabels($value['variation_id'], $business_id);
+                
                 if (! empty($value['exp_date'])) {
                     $details->exp_date = $value['exp_date'];
                 }
