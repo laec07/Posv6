@@ -472,8 +472,8 @@ class ProductUtil extends Util
                         ->whereNull('brands.deleted_at');
                 })
                 ->where('p.business_id', $business_id)
-                ->where('variations.id', $variation_id)
-                ->where('vld.location_id', $location_id);
+                ->where('variations.id', $variation_id);
+                //->where('vld.location_id', $location_id);
         //Add condition for check of quantity. (if stock is not enabled or qty_available > 0)
         if ($check_qty) {
             $query->where(function ($query) {
