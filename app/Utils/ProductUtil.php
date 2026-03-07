@@ -556,6 +556,114 @@ class ProductUtil extends Util
         return $product;
     }
 
+    /** LAESTRADA
+     * Get all details for a product from its variation id para TRANSFERENCIAS DE STOCK
+     * se obliga a buscar por location id, para que traiga la cantidad disponible en esa ubicación, aunque se omita la validación de cantidad.
+     * @param  int  $variation_id
+     * @param  int  $business_id
+     * @param  int  $location_id
+     * @param  bool  $check_qty (If false qty_available is not checked)
+     * @return array
+     */
+    public function getDetailsFromVariation2($variation_id, $business_id, $location_id = null, $check_qty = true)
+    {        
+        $variation = Variation::with('media')->findOrFail($variation_id);
+
+        $query = Variation::join('products AS p', 'variations.product_id', '=', 'p.id')
+                ->join('product_variations AS pv', 'variations.product_variation_id', '=', 'pv.id')
+                ->leftjoin('variation_location_details AS vld', 'variations.id', '=', 'vld.variation_id')
+                ->leftjoin('units', 'p.unit_id', '=', 'units.id')
+                ->leftjoin('units as u', 'p.secondary_unit_id', '=', 'u.id')
+                ->leftjoin('brands', function ($join) {
+                    $join->on('p.brand_id', '=', 'brands.id')
+                        ->whereNull('brands.deleted_at');
+                })
+                ->where('p.business_id', $business_id)
+                ->where('variations.id', $variation_id)
+                ->where('vld.location_id', $location_id); //ESTO FUE LO QUE SE AGREGO 
+        //Add condition for check of quantity. (if stock is not enabled or qty_available > 0)
+        if ($check_qty) {
+            $query->where(function ($query) {
+                $query->where('p.enable_stock', '!=', 1)
+                    ->orWhere('vld.qty_available', '>', 0);
+            });
+        }
+
+        if (! empty($location_id) && $check_qty) {
+            dd("location id is not empty");
+            //Check for enable stock, if enabled check for location id.
+            $query->where(function ($query) use ($location_id) {
+                $query->where('p.enable_stock', '!=', 1)
+                            ->orWhere('vld.location_id', $location_id);
+            });
+        }
+
+        $product = $query->select(
+            DB::raw("IF(pv.is_dummy = 0, CONCAT(p.name, 
+                    ' (', pv.name, ':',variations.name, ')'), p.name) AS product_name"),
+            'p.id as product_id',
+            'p.brand_id',
+            'p.category_id',
+            'p.tax as tax_id',
+            'p.enable_stock',
+            'p.enable_sr_no',
+            'p.type as product_type',
+            'p.name as product_actual_name',
+            'p.warranty_id',
+            'p.image as product_image',
+            'p.product_custom_field1',
+            'p.product_custom_field2',
+            'p.product_custom_field3',
+            'p.product_custom_field4',
+            'p.product_custom_field5',
+            'p.product_custom_field6',
+            'p.product_custom_field7',
+            'p.product_custom_field8',
+            'p.product_custom_field9',
+            'p.product_custom_field10',
+            'p.product_custom_field11',
+            'p.product_custom_field12',
+            'p.product_custom_field13',
+            'p.product_custom_field14',
+            'p.product_custom_field15',
+            'p.product_custom_field16',
+            'p.product_custom_field17',
+            'p.product_custom_field18',
+            'p.product_custom_field19',
+            'p.product_custom_field20',
+            'pv.name as product_variation_name',
+            'pv.is_dummy as is_dummy',
+            'variations.name as variation_name',
+            'variations.sub_sku',
+            'p.barcode_type',
+            'vld.qty_available',
+            'variations.default_sell_price',
+            'variations.sell_price_inc_tax',
+            'variations.id as variation_id',
+            'variations.combo_variations',  //Used in combo products
+            'units.short_name as unit',
+            'units.id as unit_id',
+            'units.allow_decimal as unit_allow_decimal',
+            'u.short_name as second_unit',
+            'brands.name as brand',
+            DB::raw('(SELECT purchase_price_inc_tax FROM purchase_lines WHERE 
+                        variation_id=variations.id ORDER BY id DESC LIMIT 1) as last_purchased_price')
+        )
+        ->firstOrFail();
+
+        $product->media = $variation->media;
+
+        if ($product->product_type == 'combo') {
+            if ($check_qty) {
+                $product->qty_available = $this->calculateComboQuantity($location_id, $product->combo_variations);
+            }
+
+            $product->combo_products = $this->calculateComboDetails($location_id, $product->combo_variations);
+        }
+
+        return $product;
+    }
+
     /**
      * Trae detalle del producto para etiquetas
      * impresoón de etiquetas.

@@ -99,7 +99,7 @@
                     <input type="hidden" id="product_row_index" value="0">
                     <input type="hidden" id="total_amount" name="final_total" value="0">
                     <div class="table-responsive">
-                        <table class="table table-bordered table-striped table-condensed" id="stock_adjustment_product_table">
+                        <table class="table table-bordered table-striped table-condensed" id="stock_adjustment_product_table"> 
                             <thead>
                                 <tr>
                                     <th class="col-sm-4 text-center">

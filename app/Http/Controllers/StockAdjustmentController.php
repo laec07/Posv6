@@ -392,7 +392,7 @@ class StockAdjustmentController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function getProductRow(Request $request)
-    {
+    {       
         if (request()->ajax()) {
             $row_index = $request->input('row_index');
             $variation_id = $request->input('variation_id');
@@ -400,6 +400,7 @@ class StockAdjustmentController extends Controller
 
             $business_id = $request->session()->get('user.business_id');
             $product = $this->productUtil->getDetailsFromVariation($variation_id, $business_id, $location_id);
+            $request->input('status')=='solicitado' ? $product->qty_available = 999 : $product->qty_available; //LAESTRADA
             $product->formatted_qty_available = $this->productUtil->num_f($product->qty_available);
             $type = ! empty($request->input('type')) ? $request->input('type') : 'stock_adjustment';
 

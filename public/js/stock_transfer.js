@@ -228,13 +228,14 @@ $(document).ready(function() {
     });
 });
 
-function stock_transfer_product_row(variation_id) {
+function stock_transfer_product_row(variation_id) { 
     var row_index = parseInt($('#product_row_index').val());
     var location_id = $('select#location_id').val();
+    var status = $('#status').val();
     $.ajax({
         method: 'POST',
         url: '/stock-adjustments/get_product_row',
-        data: { row_index: row_index, variation_id: variation_id, location_id: location_id, type: 'stock_transfer' },
+        data: { row_index: row_index, variation_id: variation_id, location_id: location_id, type: 'stock_transfer',status:status },
         dataType: 'html',
         success: function(result) {
             $('table#stock_adjustment_product_table tbody').append(result);
@@ -327,7 +328,7 @@ function update_table_row(tr) {
     var quantity = parseFloat(__read_number(tr.find('input.product_quantity')));
     var multiplier = 1;
 
-    if (tr.find('select.sub_unit').length) {
+    if (tr.find('select.sub_unit').length) { 
         multiplier = parseFloat(
             tr.find('select.sub_unit')
                 .find(':selected')

@@ -687,7 +687,7 @@ class StockTransferController extends Controller
 
         $products = [];
         foreach ($sell_transfer->sell_lines as $sell_line) {
-            $product = $this->productUtil->getDetailsFromVariation($sell_line->variation_id, $business_id, $sell_transfer->location_id, false);
+            $product = $this->productUtil->getDetailsFromVariation2($sell_line->variation_id, $business_id, $sell_transfer->location_id, false); //LAESTRADA - PARA OBLIGAR BUSQUEDA POR VARIACION Y NO POR PRODUCTO
             $product->formatted_qty_available = $this->productUtil->num_f($product->qty_available);
             $product->sub_unit_id = $sell_line->sub_unit_id;
             $product->quantity_ordered = $sell_line->quantity;
