@@ -28,6 +28,7 @@ use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
 use App\Events\ProductsCreatedOrModified;
 use App\TransactionSellLine;
+use App\UnitVariation; //laestrada - variante de producto - precios por presentación
 
 class ProductController extends Controller
 {
@@ -2379,5 +2380,84 @@ class ProductController extends Controller
         $filename = 'products-export-'.\Carbon::now()->format('Y-m-d').'.xlsx';
 
         return Excel::download(new ProductsExport, $filename);
+    }
+
+    /**
+     * Function to save price for subunits
+     * autor laestrada - variante de producto - precios por presentación
+     */
+    public function savePriceSubunits(Request $request)
+    {
+        if (! auth()->user()->can('product.create')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            $business_id = $request->session()->get('user.business_id');
+            DB::beginTransaction();
+
+            // Guardar precios en UnitVariation
+            $subunit_prices = $request->input('subunit_prices', []);
+            foreach ($subunit_prices as $unit_variation_id => $price) {
+                if ($price === null || $price === '') {
+                    continue; // No guardar precios vacíos
+                }
+                UnitVariation::updateOrCreate(
+                    [
+                        'units_id' => $unit_variation_id,
+                        'products_id' => $request->input('product_id'),
+                        'business_id' => $business_id,
+                    ],
+                    [
+                        'precio_unit' => $price,
+                    ]
+                );
+            }
+
+            DB::commit();
+            $output = ['success' => 1,
+                'msg' => __('lang_v1.updated_success'),
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+
+            $output = ['success' => 0,
+                'msg' => __('messages.something_went_wrong'),
+            ];
+        }
+
+        // Si es una petición AJAX, devolver JSON
+        if ($request->ajax()) {
+            return response()->json($output);
+        }
+
+        return redirect('products')->with('status', $output);
+    }
+
+    /**
+     * Function to get price for subunits
+     * autor laestrada - variante de producto - precios por presentación
+     */
+    public function getPriceSubunits(Request $request)
+    {
+        if (! auth()->user()->can('product.view')) {
+            abort(403, 'Unauthorized action.');
+        }
+
+        try {
+            $business_id = $request->session()->get('user.business_id');
+            $product_id = $request->input('product_id');
+
+            $subunit_prices = UnitVariation::where('products_id', $product_id)
+                ->where('business_id', $business_id)
+                ->pluck('precio_unit', 'units_id');
+
+            return response()->json(['success' => 1, 'subunit_prices' => $subunit_prices]);
+        } catch (\Exception $e) {
+            \Log::emergency('File:'.$e->getFile().'Line:'.$e->getLine().'Message:'.$e->getMessage());
+
+            return response()->json(['success' => 0, 'msg' => __('messages.something_went_wrong')]);
+        }
     }
 }
