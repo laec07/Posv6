@@ -73,6 +73,16 @@
                   @endforeach
                 </select>
               </div>
+              <div class="row">
+                <input type="hidden" name="submit_type" id="submit_type">
+                  <div class="col-sm-12">
+                    <div class="text-center">
+                      <div class="btn-group">
+                        <button type="button" class="btn btn-info" id="open_subunit_prices_modal">Precios presentaciones</button>
+                      </div>
+                    </div>
+                  </div>
+              </div>
             </div>
 
             @if(!empty($common_settings['enable_secondary_unit']))
@@ -374,6 +384,23 @@
           </div>
         </div>
   </div>
+<div class="modal fade" id="subunit_prices_modal" tabindex="-1" role="dialog">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Precios por presentación</h4>
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+      </div>
+      <div class="modal-body" id="subunit_prices_body">
+        <!-- Aquí se llenarán dinámicamente los inputs -->
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="save_subunit_prices">Guardar</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+      </div>
+    </div>
+  </div>
+</div>
 {!! Form::close() !!}
 </section>
 <!-- /.content -->
@@ -381,6 +408,9 @@
 @endsection
 
 @section('javascript')
+<script> // laestrada - variante de producto - precios por presentación
+  window.subunit_prices = @json($product->subunit_prices ?? []);
+</script>
   <script src="{{ asset('js/product.js?v=' . $asset_v) }}"></script>
   <script type="text/javascript">
     $(document).ready( function(){

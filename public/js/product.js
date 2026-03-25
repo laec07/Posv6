@@ -700,3 +700,69 @@ $(document).on('click', 'button.apply-all', function(){
         element.change();
     });
 });
+// laestrada - variante de producto - precios por presentación
+$(document).on('click', '#open_subunit_prices_modal', function() {
+    var subunits = $('#sub_unit_ids').find('option:selected');
+    var subunit_ids = [];
+    subunits.each(function() {
+        subunit_ids.push($(this).val());
+    });
+
+    // Llamado AJAX para obtener los precios actuales de las subunidades seleccionadas
+    $.ajax({
+        url: '/products/get_price_subunits', // Cambia esta ruta por la que definas en tu backend
+        method: 'GET',
+        data: {
+            product_id: $('#product_id').val(),
+            subunit_ids: subunit_ids
+        },
+        success: function(response) {
+            // response debe ser un objeto { subunit_id: precio, ... }
+            var precios = response.subunit_prices || {};
+            var html = '';
+            subunits.each(function() {
+                var id = $(this).val();
+                var nombre = $(this).text();
+                var precio = precios[id] ?? '';
+                html += '<div class="form-group">';
+                html += '<label>' + nombre + '</label>';
+                html += '<input type="number" step="0.01" class="form-control" name="subunit_prices['+id+']" value="'+precio+'">';
+                html += '</div>';
+            });
+            $('#subunit_prices_body').html(html);
+            $('#subunit_prices_modal').modal('show');
+        },
+        error: function() {
+            toastr.error('No se pudieron obtener los precios de las presentaciones.');
+        }
+    });
+});
+
+$(document).on('click', '#save_subunit_prices', function() {
+    var data = {};
+    $('#subunit_prices_body').find('input[name^="subunit_prices"]').each(function() {
+        var match = $(this).attr('name').match(/\[(\d+)\]/);
+        if (match) {
+            var subunit_id = match[1];
+            data[subunit_id] = $(this).val();
+        }
+    });
+
+    
+    $.ajax({
+        url: '/products/save_price_subunits',
+        method: 'POST',
+        data: {
+            product_id: $('#product_id').val(),
+            subunit_prices: data,
+            _token: $('meta[name="csrf-token"]').attr('content')
+        },
+        success: function(response) {
+            toastr.success('Precios guardados correctamente');
+            $('#subunit_prices_modal').modal('hide');
+        },
+        error: function(xhr) {
+            toastr.error('Error al guardar los precios');
+        }
+    });
+});
