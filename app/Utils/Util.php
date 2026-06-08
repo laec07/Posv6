@@ -1547,7 +1547,7 @@ class Util
                 $this->client = new Client([
                     'base_uri' => 'https://nominatim.openstreetmap.org/',
                     'timeout' => 10,
-                    'verify' => false,
+                    'verify' => true,
                     'headers' => [
                         'User-Agent' => 'pos'  // Add a User-Agent header
                     ],
