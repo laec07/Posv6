@@ -154,6 +154,7 @@
     </section>
 @stop
 @section('javascript')
+    <script src="{{ asset('js/draft_autosave.js?v=' . $asset_v) }}"></script>
     <script src="{{ asset('js/stock_adjustment.js?v=' . $asset_v) }}"></script>
     <script type="text/javascript">
         __page_leave_confirmation('#stock_adjustment_form');

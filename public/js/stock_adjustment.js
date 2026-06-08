@@ -112,6 +112,30 @@ $(document).ready(function() {
 
     $('form#stock_adjustment_form').validate();
 
+    //Auto-guardado de borrador (solo en pantalla de creacion, no en edicion)
+    if (typeof DraftAutosave !== 'undefined' &&
+        $('#stock_adjustment_form').length &&
+        $('#stock_adjustment_form input[name="_method"]').length === 0) {
+        DraftAutosave.init({
+            key: 'draft_stock_adjustment',
+            form: '#stock_adjustment_form',
+            tbody: 'table#stock_adjustment_product_table tbody',
+            rowIndexInput: '#product_row_index',
+            fields: [
+                'select[name="location_id"]',
+                'input[name="ref_no"]',
+                'input[name="transaction_date"]',
+                'select[name="adjustment_type"]',
+                'input[name="total_amount_recovered"]',
+                'textarea[name="additional_notes"]'
+            ],
+            onRestore: function() {
+                update_table_total();
+            },
+            rowSelector: 'tr.product_row'
+        });
+    }
+
     stock_adjustment_table = $('#stock_adjustment_table').DataTable({
         processing: true,
         serverSide: true,

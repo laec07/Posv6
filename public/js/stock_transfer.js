@@ -141,6 +141,31 @@ $(document).ready(function() {
         }
     });
 
+    //Auto-guardado de borrador (solo en pantalla de creacion, no en edicion)
+    if (typeof DraftAutosave !== 'undefined' &&
+        $('#stock_transfer_form').length &&
+        $('#stock_transfer_form input[name="_method"]').length === 0) {
+        DraftAutosave.init({
+            key: 'draft_stock_transfer',
+            form: '#stock_transfer_form',
+            tbody: 'table#stock_adjustment_product_table tbody',
+            rowIndexInput: '#product_row_index',
+            fields: [
+                '#status',
+                '#location_id',
+                '#transfer_location_id',
+                'input[name="ref_no"]',
+                'input[name="transaction_date"]',
+                'input[name="shipping_charges"]',
+                'textarea[name="additional_notes"]'
+            ],
+            onRestore: function() {
+                update_table_total();
+            },
+            rowSelector: 'tr.product_row'
+        });
+    }
+
     stock_transfer_table = $('#stock_transfer_table').DataTable({
         
         processing: true,
