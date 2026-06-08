@@ -219,8 +219,9 @@ class SellController extends Controller
             if (! empty(request()->start_date) && ! empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
-                $sells->whereDate('transactions.transaction_date', '>=', $start)
-                            ->whereDate('transactions.transaction_date', '<=', $end);
+                //Usar rango en lugar de whereDate() (DATE() sobre la columna anula el indice)
+                $sells->where('transactions.transaction_date', '>=', $start . ' 00:00:00')
+                            ->where('transactions.transaction_date', '<=', $end . ' 23:59:59');
             }
 
             //Check is_direct sell
