@@ -1189,9 +1189,9 @@ class TransactionUtil extends Util
             if (!is_dir($directory)) {
                 mkdir($directory, 0777, true); // 0777 sets full permissions, and true allows the creation of nested directories
             }
-            //Eliminar al pasar a produccion !!!!!!!!!!!!!!!!!!!!
+            //Cliente HTTP con validación SSL habilitada para certificación FEL
             $client = new \GuzzleHttp\Client([
-                'verify' => false
+                'verify' => true
             ]);
             //Mando archivo firmado para certificarse
             $responsecert = $client->post(
@@ -1305,8 +1305,8 @@ class TransactionUtil extends Util
         // Convertir XML a cadena
         $xmlStringA = $xmlA->asXML();
 
-        // Cliente HTTP para enviar la solicitud POST
-        $client = new \GuzzleHttp\Client(['verify' => false]);
+        // Cliente HTTP para enviar la solicitud POST con validación SSL habilitada
+        $client = new \GuzzleHttp\Client(['verify' => true]);
         $resultado = null;
 
         try {

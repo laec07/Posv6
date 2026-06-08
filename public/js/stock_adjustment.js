@@ -60,6 +60,14 @@ $(document).ready(function() {
                     .appendTo(ul);
             }
         };
+
+        // Prevenir submit del formulario al presionar Enter en el input de búsqueda
+        $('#search_product_for_srock_adjustment').on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                return false;
+            }
+        });
     }
 
     $('select#location_id').change(function() {
@@ -103,6 +111,30 @@ $(document).ready(function() {
     });
 
     $('form#stock_adjustment_form').validate();
+
+    //Auto-guardado de borrador (solo en pantalla de creacion, no en edicion)
+    if (typeof DraftAutosave !== 'undefined' &&
+        $('#stock_adjustment_form').length &&
+        $('#stock_adjustment_form input[name="_method"]').length === 0) {
+        DraftAutosave.init({
+            key: 'draft_stock_adjustment',
+            form: '#stock_adjustment_form',
+            tbody: 'table#stock_adjustment_product_table tbody',
+            rowIndexInput: '#product_row_index',
+            fields: [
+                'select[name="location_id"]',
+                'input[name="ref_no"]',
+                'input[name="transaction_date"]',
+                'select[name="adjustment_type"]',
+                'input[name="total_amount_recovered"]',
+                'textarea[name="additional_notes"]'
+            ],
+            onRestore: function() {
+                update_table_total();
+            },
+            rowSelector: 'tr.product_row'
+        });
+    }
 
     stock_adjustment_table = $('#stock_adjustment_table').DataTable({
         processing: true,
@@ -162,6 +194,35 @@ $(document).ready(function() {
 });
 
 function stock_adjustment_product_row(variation_id) {
+    //Si el producto (variación) ya está en la tabla, incrementar su cantidad
+    //en lugar de agregar una fila nueva (evita duplicados al escanear con pistola)
+    var is_added = false;
+    $('table#stock_adjustment_product_table tbody')
+        .find('tr')
+        .each(function() {
+            var row_v_id = $(this)
+                .find('input[name$="[variation_id]"]')
+                .val();
+            if (row_v_id == variation_id && !is_added) {
+                is_added = true;
+                var qty_element = $(this).find('input.product_quantity');
+                var qty = parseFloat(__read_number(qty_element));
+                if (isNaN(qty)) {
+                    qty = 0;
+                }
+                __write_number(qty_element, qty + 1);
+                qty_element.change();
+                $('#search_product_for_srock_adjustment')
+                    .focus()
+                    .select();
+            }
+        });
+
+    //Si ya existía, no agregamos una fila nueva
+    if (is_added) {
+        return;
+    }
+
     var row_index = parseInt($('#product_row_index').val());
     var location_id = $('select#location_id').val();
     $.ajax({

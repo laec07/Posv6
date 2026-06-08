@@ -52,7 +52,13 @@
 				<div class="col-sm-6">
 					<div class="form-group">
 						{!! Form::label('transfer_location_id', __('lang_v1.location_to').':*') !!}
-						{!! Form::select('transfer_location_id', $business_locations, $purchase_transfer->location_id, ['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'id' => 'transfer_location_id', 'disabled']); !!}
+						@php
+							$transfer_location_disabled = !in_array($sell_transfer->status, ['solicitado', 'pending']);
+						@endphp
+						{!! Form::select('transfer_location_id', $business_locations, $purchase_transfer->location_id, array_merge(['class' => 'form-control select2', 'placeholder' => __('messages.please_select'), 'id' => 'transfer_location_id'], $transfer_location_disabled ? ['disabled'] : [])); !!}
+						@if($transfer_location_disabled)
+							<small class="text-muted">{{ __('messages.cannot_be_changed') }}</small>
+						@endif
 					</div>
 				</div>
 				

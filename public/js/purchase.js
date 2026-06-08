@@ -16,6 +16,36 @@ $(document).ready(function() {
         ignoreReadonly: true,
     });
 
+    //Auto-guardado de borrador (solo en pantalla de creacion, no en edicion)
+    if (typeof DraftAutosave !== 'undefined' &&
+        $('#add_purchase_form').length &&
+        $('#add_purchase_form input[name="_method"]').length === 0) {
+        DraftAutosave.init({
+            key: 'draft_purchase',
+            form: '#add_purchase_form',
+            tbody: 'table#purchase_entry_table tbody',
+            rowIndexInput: '#row_count',
+            fields: [
+                '#location_id',
+                '#supplier_id',
+                '#ref_no',
+                'input[name="transaction_date"]',
+                'select[name="status"]',
+                '#discount_type',
+                '#discount_amount',
+                '#tax_id',
+                '#shipping_charges',
+                'textarea[name="additional_notes"]'
+            ],
+            onRestore: function() {
+                if (typeof update_table_total === 'function') { update_table_total(); }
+                if (typeof update_grand_total === 'function') { update_grand_total(); }
+                if (typeof update_table_sr_number === 'function') { update_table_sr_number(); }
+            },
+            rowSelector: 'tr'
+        });
+    }
+
     //get suppliers
     $('#supplier_id').select2({
         ajax: {

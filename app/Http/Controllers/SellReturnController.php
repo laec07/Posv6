@@ -312,7 +312,7 @@ class SellReturnController extends Controller
                 $output = ['success' => 1,
                     'msg' => __('lang_v1.success'),
                     'receipt' => $receipt,
-                    'receipt' => $receipt,'felauth' => $felauth,
+                    'felauth' => $felauth,
                 ];
             }
         } catch (\Exception $e) {
