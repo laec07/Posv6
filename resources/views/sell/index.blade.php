@@ -238,12 +238,13 @@
                     },
                     {
                         data: 'total_paid',
-                        name: 'total_paid',
+                        orderable: false,
                         "searchable": false
                     },
                     {
                         data: 'total_remaining',
-                        name: 'total_remaining'
+                        orderable: false,
+                        "searchable": false
                     },
                     {
                         data: 'return_due',
