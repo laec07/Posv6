@@ -219,8 +219,9 @@ class SellController extends Controller
             if (! empty(request()->start_date) && ! empty(request()->end_date)) {
                 $start = request()->start_date;
                 $end = request()->end_date;
-                $sells->whereDate('transactions.transaction_date', '>=', $start)
-                            ->whereDate('transactions.transaction_date', '<=', $end);
+                //Usar rango en lugar de whereDate() (DATE() sobre la columna anula el indice)
+                $sells->where('transactions.transaction_date', '>=', $start . ' 00:00:00')
+                            ->where('transactions.transaction_date', '<=', $end . ' 23:59:59');
             }
 
             //Check is_direct sell
@@ -365,7 +366,33 @@ class SellController extends Controller
                 $sells->addSelect('transactions.is_recurring', 'transactions.recur_parent_id');
             }
             $sales_order_statuses = Transaction::sales_order_statuses();
-            $datatable = Datatables::of($sells)
+
+            //Optimizacion del conteo de DataTables.
+            //La consulta del listado usa GROUP BY + subconsultas correlacionadas, por
+            //lo que Yajra envuelve TODA la consulta en "select count(*) from (...)" y
+            //MariaDB la materializa completa (calcula las subconsultas por cada fila),
+            //provocando timeout (max_statement_time) incluso mostrando solo 25.
+            //Calculamos el total con un conteo liviano de transacciones distintas,
+            //sin subconsultas, sin GROUP BY y sin ORDER BY.
+            $total_count = null;
+            $count_query = clone $sells;
+            $count_base = $count_query->getQuery();
+            if (empty($count_base->havings)) {
+                $count_base->groups = null;
+                $count_base->orders = null;
+                try {
+                    $total_count = $count_query->distinct()->count('transactions.id');
+                } catch (\Throwable $e) {
+                    $total_count = null;
+                }
+            }
+
+            $datatable = Datatables::of($sells);
+            if (! is_null($total_count)) {
+                //Evita el count(*) envolvente pesado en la carga normal (sin busqueda).
+                $datatable->setTotalRecords($total_count);
+            }
+            $datatable = $datatable
                 ->addColumn(
                     'action',
                     function ($row) use ($only_shipments, $is_admin, $sale_type) {
