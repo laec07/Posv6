@@ -60,6 +60,14 @@ $(document).ready(function() {
                     .appendTo(ul);
             }
         };
+
+        // Prevenir submit del formulario al presionar Enter en el input de búsqueda
+        $('#search_product_for_srock_adjustment').on('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                return false;
+            }
+        });
     }
 
     $('select#location_id').change(function() {
