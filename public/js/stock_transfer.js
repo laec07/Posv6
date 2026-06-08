@@ -236,7 +236,36 @@ $(document).ready(function() {
     });
 });
 
-function stock_transfer_product_row(variation_id) { 
+function stock_transfer_product_row(variation_id) {
+    //Si el producto (variación) ya está en la tabla, incrementar su cantidad
+    //en lugar de agregar una fila nueva (evita duplicados al escanear con pistola)
+    var is_added = false;
+    $('table#stock_adjustment_product_table tbody')
+        .find('tr')
+        .each(function() {
+            var row_v_id = $(this)
+                .find('input[name$="[variation_id]"]')
+                .val();
+            if (row_v_id == variation_id && !is_added) {
+                is_added = true;
+                var qty_element = $(this).find('input.product_quantity');
+                var qty = parseFloat(__read_number(qty_element));
+                if (isNaN(qty)) {
+                    qty = 0;
+                }
+                __write_number(qty_element, qty + 1);
+                qty_element.change();
+                $('#search_product_for_srock_adjustment')
+                    .focus()
+                    .select();
+            }
+        });
+
+    //Si ya existía, no agregamos una fila nueva
+    if (is_added) {
+        return;
+    }
+
     var row_index = parseInt($('#product_row_index').val());
     var location_id = $('select#location_id').val();
     var status = $('#status').val();
