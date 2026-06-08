@@ -5497,12 +5497,11 @@ class TransactionUtil extends Util
                     'transactions.custom_field_4',
                     DB::raw('DATE_FORMAT(transactions.transaction_date, "%Y/%m/%d") as sale_date'),
                     DB::raw("CONCAT(COALESCE(u.surname, ''),' ',COALESCE(u.first_name, ''),' ',COALESCE(u.last_name,'')) as added_by"),
-                    DB::raw('(SELECT SUM(IF(TP.is_return = 1,-1*TP.amount,TP.amount)) FROM transaction_payments AS TP WHERE
-                        TP.transaction_id=transactions.id) as total_paid'),
+                    //total_paid y return_paid se calculan por fila mostrada en el
+                    //controlador (no como subconsultas correlacionadas aqui) para
+                    //evitar evaluarlas sobre todo el conjunto y causar timeouts.
                     'bl.name as business_location',
                     DB::raw('COUNT(SR.id) as return_exists'),
-                    DB::raw('(SELECT SUM(TP2.amount) FROM transaction_payments AS TP2 WHERE
-                        TP2.transaction_id=SR.id ) as return_paid'),
                     DB::raw('COALESCE(SR.final_total, 0) as amount_return'),
                     'SR.id as return_transaction_id',
                     'tos.name as types_of_service_name',

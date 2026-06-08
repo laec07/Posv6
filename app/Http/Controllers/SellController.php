@@ -387,6 +387,27 @@ class SellController extends Controller
                 }
             }
 
+            //total_paid y return_paid se calculan solo para las filas mostradas
+            //(no como subconsultas correlacionadas en la consulta base) usando el
+            //indice transaction_payments.transaction_id. Se cachea en la fila.
+            $get_total_paid = function ($row) {
+                if (! isset($row->total_paid)) {
+                    $row->total_paid = (float) \App\TransactionPayment::where('transaction_id', $row->id)
+                        ->sum(DB::raw('IF(is_return = 1, -1 * amount, amount)'));
+                }
+
+                return $row->total_paid;
+            };
+            $get_return_paid = function ($row) {
+                if (! isset($row->return_paid)) {
+                    $row->return_paid = empty($row->return_transaction_id)
+                        ? 0
+                        : (float) \App\TransactionPayment::where('transaction_id', $row->return_transaction_id)->sum('amount');
+                }
+
+                return $row->return_paid;
+            };
+
             $datatable = Datatables::of($sells);
             if (! is_null($total_count)) {
                 //Evita el count(*) envolvente pesado en la carga normal (sin busqueda).
@@ -520,7 +541,11 @@ class SellController extends Controller
                 )
                 ->editColumn(
                     'total_paid',
-                    '<span class="total-paid" data-orig-value="{{$total_paid}}">@format_currency($total_paid)</span>'
+                    function ($row) use ($get_total_paid) {
+                        $total_paid = $get_total_paid($row);
+
+                        return '<span class="total-paid" data-orig-value="'.$total_paid.'">'.$this->transactionUtil->num_f($total_paid, true).'</span>';
+                    }
                 )
                 ->editColumn(
                     'total_before_tax',
@@ -551,16 +576,16 @@ class SellController extends Controller
                     'types_of_service_name',
                     '<span class="service-type-label" data-orig-value="{{$types_of_service_name}}" data-status-name="{{$types_of_service_name}}">{{$types_of_service_name}}</span>'
                 )
-                ->addColumn('total_remaining', function ($row) {
-                    $total_remaining = $row->final_total - $row->total_paid;
+                ->addColumn('total_remaining', function ($row) use ($get_total_paid) {
+                    $total_remaining = $row->final_total - $get_total_paid($row);
                     $total_remaining_html = '<span class="payment_due" data-orig-value="'.$total_remaining.'">'.$this->transactionUtil->num_f($total_remaining, true).'</span>';
 
                     return $total_remaining_html;
                 })
-                ->addColumn('return_due', function ($row) {
+                ->addColumn('return_due', function ($row) use ($get_return_paid) {
                     $return_due_html = '';
                     if (! empty($row->return_exists)) {
-                        $return_due = $row->amount_return - $row->return_paid;
+                        $return_due = $row->amount_return - $get_return_paid($row);
                         $return_due_html .= '<a href="'.action([\App\Http\Controllers\TransactionPaymentController::class, 'show'], [$row->return_transaction_id]).'" class="view_purchase_return_payment_modal"><span class="sell_return_due" data-orig-value="'.$return_due.'">'.$this->transactionUtil->num_f($return_due, true).'</span></a>';
                     }
 
