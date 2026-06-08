@@ -590,7 +590,6 @@ class ProductUtil extends Util
         }
 
         if (! empty($location_id) && $check_qty) {
-            dd("location id is not empty");
             //Check for enable stock, if enabled check for location id.
             $query->where(function ($query) use ($location_id) {
                 $query->where('p.enable_stock', '!=', 1)
